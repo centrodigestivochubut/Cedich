@@ -1,0 +1,325 @@
+---
+import { nosotros } from '../../data/nosotros.js';
+import HexPattern from '../ui/HexPattern.astro';
+import { fuentesResponsive } from '../../lib/imagenes.js';
+
+const fuentesImagen = nosotros.imagen
+  ? fuentesResponsive(nosotros.imagen, [480, 720, 1080, 1448])
+  : null;
+
+const sizesImagen =
+  '(min-width: 1536px) 670px, (min-width: 1024px) 600px, (min-width: 768px) calc(100vw - 92px), calc(100vw - 52px)';
+
+/** @type {Record<string, string>} */
+const iconosPaths = {
+  ubicacion: '<path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z" /><circle cx="12" cy="10" r="2.5" />',
+  indicaciones:
+    '<rect x="5" y="4" width="14" height="17" rx="2" /><rect x="9" y="2.5" width="6" height="3" rx="1" /><path d="M9 11h6" /><path d="M9 15h6" />',
+  informe:
+    '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z" /><path d="M14 3v5h5" /><path d="m9 14.5 2 2 4-4" />',
+};
+---
+
+<section id="nosotros" class="relative bg-white py-14 md:py-24 overflow-hidden">
+  <!-- Resplandor radial azul muy tenue -->
+  <div
+    class="nosotros-glow pointer-events-none absolute inset-x-0 top-0 h-[520px]"
+    style={{
+      backgroundImage:
+        'radial-gradient(55% 55% at 50% 0%, color-mix(in srgb, var(--color-blue) 8%, transparent) 0%, transparent 100%)',
+    }}
+  ></div>
+
+  <div class="nosotros-hex-mask absolute inset-0 pointer-events-none">
+    <HexPattern color="var(--color-blue)" opacity={0.03} />
+  </div>
+
+  <!-- Sin JavaScript, el contenido animado se ve en su posición final -->
+  <noscript>
+    <style is:inline>
+      #nosotros .reveal { opacity: 1; transform: none; }
+      #nosotros .nosotros-frame { transform: translate(var(--frame-offset), var(--frame-offset)); }
+    </style>
+  </noscript>
+
+  <div class="container relative">
+    <!--
+      Mobile y tablet: texto, foto, diferenciales y link, en ese orden.
+      Desktop: texto a la izquierda y foto a la derecha, centrados entre sí.
+    -->
+    <div class="nosotros-grid">
+      <div class="nosotros-intro">
+        <p class="eyebrow eyebrow-dark reveal">{nosotros.eyebrow}</p>
+        <h2 class="reveal reveal-delay-1 mt-4 text-balance text-[var(--color-ink)]">{nosotros.titulo}</h2>
+        <p class="nosotros-texto reveal reveal-delay-2 mt-5 text-[16px] leading-[1.65] max-w-[62ch] lg:text-[17px]">
+          {nosotros.parrafo}
+        </p>
+      </div>
+
+      <!-- Foto con bloque navy desplazado detrás -->
+      <div class="nosotros-media reveal mt-9 md:mt-12 lg:mt-0">
+        <div class="nosotros-frame" aria-hidden="true">
+          <HexPattern color="var(--color-cyan)" opacity={0.12} />
+        </div>
+
+        <div class="nosotros-image relative aspect-[4/3] overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-card)] lg:aspect-[5/4]">
+          {
+            fuentesImagen ? (
+              <picture>
+                <source type="image/avif" srcset={fuentesImagen.avif} sizes={sizesImagen} />
+                <source type="image/webp" srcset={fuentesImagen.webp} sizes={sizesImagen} />
+                <img
+                  src={fuentesImagen.fallback}
+                  alt={nosotros.imagenAlt}
+                  width="1448"
+                  height="1086"
+                  loading="lazy"
+                  class="nosotros-image-img h-full w-full object-cover"
+                />
+              </picture>
+            ) : (
+              <div class="flex h-full w-full items-center justify-center bg-[var(--color-surface)] border border-[var(--color-border)]">
+                <div class="text-center px-8">
+                  <svg
+                    width="48"
+                    height="48"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="var(--color-blue)"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="mx-auto mb-3 opacity-40"
+                  >
+                    <rect x="3" y="3" width="18" height="18" rx="2" />
+                    <circle cx="9" cy="9" r="2" />
+                    <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                  </svg>
+                  <p class="text-[13px] text-[var(--color-muted)] max-w-none">
+                    PENDIENTE CLIENTE: imagen institucional de CEDICH
+                  </p>
+                </div>
+              </div>
+            )
+          }
+
+          <p class="nosotros-etiqueta absolute left-3 top-3 inline-flex max-w-none items-center gap-2 rounded-[var(--radius-pill)] px-3 py-1.5 text-[11px] font-semibold uppercase leading-none tracking-[0.1em] text-[var(--color-navy)] md:left-4 md:top-4">
+            <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--color-cyan)]" aria-hidden="true"></span>
+            {nosotros.etiquetaFoto}
+          </p>
+        </div>
+      </div>
+
+      <!-- Diferenciales: lista en mobile y desktop, fila de tres en tablet -->
+      <ul class="nosotros-diferenciales mt-10 grid grid-cols-1 gap-5 md:mt-12 md:-mx-3 md:grid-cols-3 md:gap-2 lg:mx-0 lg:mt-9 lg:grid-cols-1 lg:gap-5">
+        {
+          nosotros.diferenciales.map((diferencial, index) => (
+            <li class={`diferencial reveal reveal-delay-${index + 1} flex items-start gap-3.5 md:flex-col md:gap-3 md:rounded-[var(--radius)] md:p-3 lg:flex-row lg:gap-4 lg:p-0`}>
+              <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-[var(--radius-sm)] bg-gradient-to-br from-[var(--color-blue)] to-[var(--color-blue-dark)]">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="white"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={iconosPaths[diferencial.icono]}
+                />
+              </span>
+              <div>
+                <h3 class="text-[16px] font-semibold leading-[1.35] text-[var(--color-ink)]">{diferencial.titulo}</h3>
+                <p class="nosotros-texto mt-1 text-[14px] leading-[1.5] max-w-none">
+                  {diferencial.descripcion}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="nosotros-cta reveal reveal-delay-4 mt-7 md:mt-8">
+        <a
+          href={nosotros.cta.destino}
+          class="nosotros-link inline-flex min-h-[44px] items-center gap-2 text-[15px] font-semibold text-[var(--color-blue-dark)]"
+        >
+          {nosotros.cta.texto}
+          <svg
+            class="nosotros-link-arrow"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M5 12h14" />
+            <path d="M13 6l6 6-6 6" />
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Resplandor y hexágonos arrancan invisibles en el borde superior, para fundirse con el final del hero */
+  .nosotros-glow {
+    mask-image: linear-gradient(to bottom, transparent 0, black 120px);
+  }
+
+  .nosotros-hex-mask {
+    mask-image: linear-gradient(to bottom, transparent 0, black 120px, black 50%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 120px, black 50%, transparent 100%);
+  }
+
+  .nosotros-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'intro'
+      'media'
+      'difs'
+      'cta';
+  }
+
+  .nosotros-intro {
+    grid-area: intro;
+  }
+
+  .nosotros-media {
+    grid-area: media;
+  }
+
+  .nosotros-diferenciales {
+    grid-area: difs;
+  }
+
+  .nosotros-cta {
+    grid-area: cta;
+  }
+
+  /* Las filas 1fr de los extremos centran el texto respecto de la foto */
+  @media (min-width: 1024px) {
+    .nosotros-grid {
+      grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+      grid-template-rows: 1fr auto auto auto 1fr;
+      grid-template-areas:
+        '.     media'
+        'intro media'
+        'difs  media'
+        'cta   media'
+        '.     media';
+      column-gap: 56px;
+    }
+
+    .nosotros-media {
+      align-self: center;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .nosotros-grid {
+      column-gap: 72px;
+    }
+  }
+
+  /* El margen deja lugar al bloque navy, que asoma abajo y a la derecha */
+  .nosotros-media {
+    --frame-offset: 12px;
+    position: relative;
+    margin-right: var(--frame-offset);
+    margin-bottom: var(--frame-offset);
+  }
+
+  @media (min-width: 1024px) {
+    .nosotros-media {
+      --frame-offset: 24px;
+    }
+  }
+
+  .nosotros-frame {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background-image: var(--gradient-navy);
+    transform: translate(var(--frame-offset), var(--frame-offset));
+    transition: transform 600ms cubic-bezier(0.22, 1, 0.36, 1) 250ms;
+  }
+
+  .nosotros-media.reveal:not(.is-visible) .nosotros-frame {
+    transform: translate(0, 0);
+  }
+
+  .nosotros-etiqueta {
+    z-index: 1;
+    background-color: color-mix(in srgb, var(--color-white) 82%, transparent);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px rgba(14, 45, 82, 0.12);
+  }
+
+  .nosotros-image-img {
+    transition: transform 500ms ease;
+  }
+
+  /* Gris de texto más oscuro que --color-muted: 7,6:1 sobre blanco */
+  .nosotros-texto {
+    color: color-mix(in srgb, var(--color-ink) 25%, var(--color-muted));
+  }
+
+  .diferencial {
+    transition: background-color 200ms ease;
+  }
+
+  .nosotros-link-arrow {
+    transition: transform 200ms ease;
+  }
+
+  /* Hover solo con mouse: en pantallas táctiles no queda marcado al tocar */
+  @media (hover: hover) and (pointer: fine) {
+    .nosotros-image:hover .nosotros-image-img {
+      transform: scale(1.04);
+    }
+
+    .nosotros-link:hover {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .nosotros-link:hover .nosotros-link-arrow {
+      transform: translateX(3px);
+    }
+  }
+
+  /* Fondo al pasar el mouse solo en tablet, donde los diferenciales son tarjetas */
+  @media (hover: hover) and (pointer: fine) and (min-width: 768px) and (max-width: 1023.98px) {
+    .diferencial:hover {
+      background-color: var(--color-surface);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nosotros-frame,
+    .nosotros-image-img,
+    .diferencial,
+    .nosotros-link-arrow {
+      transition: none;
+    }
+
+    .nosotros-media.reveal:not(.is-visible) .nosotros-frame {
+      transform: translate(var(--frame-offset), var(--frame-offset));
+    }
+
+    .nosotros-image:hover .nosotros-image-img,
+    .nosotros-link:hover .nosotros-link-arrow {
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,486 @@
+---
+import { hero } from '../../data/hero.js';
+import { getWhatsappLink, whatsappMensajes } from '../../data/site.js';
+import { fuentesResponsive } from '../../lib/imagenes.js';
+
+const whatsappTurno = getWhatsappLink(whatsappMensajes.solicitarTurno);
+
+const fuentesMobile = fuentesResponsive('hero-mobile', [480, 720, 941]);
+const fuentesDesktop = fuentesResponsive('hero-desktop', [960, 1280, 1672]);
+
+/** @type {Record<string, string>} */
+const iconosPaths = {
+  personas:
+    '<circle cx="9" cy="8" r="3" /><path d="M3 20a6 6 0 0 1 12 0" /><circle cx="17" cy="9" r="2.5" /><path d="M15 20a5 5 0 0 1 6-4.9" />',
+  equipo:
+    '<rect x="3" y="4" width="18" height="12" rx="1.5" /><path d="M8 20h8" /><path d="M12 16v4" /><path d="M7 9l3 3 2-2 4 4" />',
+  preparacion:
+    '<rect x="9" y="3" width="6" height="3.5" rx="1" /><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" /><path d="M9 13.5l2 2 4-4" />',
+};
+---
+
+<section id="inicio" class="hero relative w-full overflow-hidden">
+  <!-- Fondo completo (foto + capas oscuras). Se vuelve transparente hacia abajo
+       y deja ver el blanco con el que arranca Nosotros. -->
+  <div class="hero-bg absolute inset-0">
+    <!-- =====================================================
+         IMAGEN RESPONSIVE DE FONDO
+         Mobile: public/imagenes/optimizadas/hero-mobile-*
+         Desktop: public/imagenes/optimizadas/hero-desktop-*
+         Versiones AVIF/WebP en varios anchos.
+         sizes: con object-cover la imagen se recorta por alto, por eso
+         en mobile y tablet necesita más ancho que el viewport.
+    ====================================================== -->
+    <picture class="hero-picture absolute inset-0 block h-full w-full">
+      <source
+        media="(min-width: 768px)"
+        type="image/avif"
+        srcset={fuentesDesktop.avif}
+        sizes="(min-width: 1280px) 100vw, 1250px"
+      />
+      <source
+        media="(min-width: 768px)"
+        type="image/webp"
+        srcset={fuentesDesktop.webp}
+        sizes="(min-width: 1280px) 100vw, 1250px"
+      />
+      <source type="image/avif" srcset={fuentesMobile.avif} sizes="820px" />
+      <source type="image/webp" srcset={fuentesMobile.webp} sizes="820px" />
+
+      <img
+        src={fuentesMobile.fallback}
+        alt=""
+        width="1080"
+        height="1920"
+        loading="eager"
+        fetchpriority="high"
+        class="hero-background absolute inset-0 h-full w-full object-cover"
+      />
+    </picture>
+
+    <!-- =====================================================
+         OVERLAY DESKTOP
+         Oscuro a la izquierda para el contenido.
+         La imagen queda más visible hacia la derecha.
+    ====================================================== -->
+    <div class="hero-overlay-desktop absolute inset-0 hidden md:block"></div>
+
+    <!-- =====================================================
+         OVERLAY MOBILE
+         Mantiene la imagen visible pero permite leer.
+    ====================================================== -->
+    <div class="hero-overlay-mobile absolute inset-0 md:hidden"></div>
+
+    <!-- Tinte general -->
+    <div
+      class="absolute inset-0 bg-[var(--color-navy)] opacity-[0.10] mix-blend-multiply lg:hidden"
+    ></div>
+
+    <!-- Resplandor de profundidad, esquina opuesta al texto -->
+    <div class="hero-glow pointer-events-none absolute inset-0 hidden md:block"></div>
+  </div>
+
+  <!-- =====================================================
+       CONTENIDO
+       Sin clases .reveal: título, bajada y botón se ven desde el primer
+       render, sin depender del script de aparición.
+  ====================================================== -->
+  <div
+    class="container relative z-10 flex min-h-[100svh] items-center pt-[100px] pb-[84px]
+           md:min-h-[650px] md:pt-[135px] md:pb-[112px]
+           lg:min-h-[max(640px,100svh)] lg:pt-[124px] lg:pb-[136px]"
+  >
+    <div
+      class="w-full text-left
+             md:max-w-[610px]
+             lg:max-w-[600px]
+             xl:max-w-[660px]"
+    >
+      <!-- Ubicación -->
+      <p
+        class="hero-eyebrow eyebrow eyebrow-light
+               text-[12px] tracking-[0.18em]
+               md:text-[13px]"
+      >
+        {hero.eyebrow}
+      </p>
+
+      <!-- H1 -->
+      <h1
+        class="hero-title mt-4 text-balance text-white
+               text-[36px] leading-[1.08] tracking-[-0.03em]
+               sm:text-[40px]
+               md:mt-4 md:max-w-[15ch] md:text-[56px] md:leading-[0.99] md:tracking-[-0.035em]
+               lg:max-w-none"
+      >
+        {hero.titulo}
+      </h1>
+
+      <!-- Bajada -->
+      <p
+        class="hero-lead mt-5 max-w-[54ch] text-balance
+               text-[16px] leading-[1.6] text-white/80
+               md:mt-6 md:text-[17px] md:leading-[1.7]
+               lg:text-[18px]"
+      >
+        {hero.bajada}
+      </p>
+
+      <!-- CTA -->
+      <a
+        href={whatsappTurno}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hero-cta hero-cta-primary mt-8 inline-flex min-h-[52px] w-full items-center
+               justify-center gap-2.5 whitespace-nowrap rounded-[var(--radius-pill)]
+               px-7 py-3.5 text-[15px] font-semibold text-white
+               shadow-[var(--shadow-card)]
+               transition duration-300
+               hover:-translate-y-[2px]
+               hover:brightness-110
+               hover:shadow-[var(--shadow-card-hover)]
+               md:mt-8 md:w-auto
+               lg:mt-9"
+      >
+        <svg
+          class="h-[19px] w-[19px]"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+          aria-hidden="true"
+        >
+          <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0 0 12.04 2Zm0 1.67c2.19 0 4.25.85 5.8 2.4a8.18 8.18 0 0 1 2.41 5.84c0 4.55-3.7 8.24-8.24 8.24a8.3 8.3 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.55 3.7-8.24 8.28-8.24Zm-4.53 4.7c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02 0 1.19.87 2.34 1 2.5.12.16 1.7 2.6 4.13 3.64 2.04.87 2.46.7 2.9.65.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.44-1.34-1.68-.14-.24-.02-.37.1-.5.11-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.32-.75-1.8-.2-.47-.4-.4-.55-.4h-.48Z" />
+        </svg>
+        {hero.cta}
+      </a>
+
+      <!-- ===================================================
+           BENEFICIOS
+           Mobile y tablet: tres columnas con ícono arriba.
+           Desktop: fila con ícono en círculo y divisores.
+      ==================================================== -->
+      <div class="mt-8 border-t border-white/[0.13] pt-6 md:mt-12 md:pt-7 xl:w-max">
+        <ul class="hero-benefits grid grid-cols-3">
+          {
+            hero.beneficios.map((beneficio) => (
+              <li class="hero-benefit flex flex-col items-center gap-2 px-1.5 text-center">
+                <svg
+                  class="hero-benefit-icon h-[22px] w-[22px] shrink-0 text-[var(--color-cyan)]"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                  set:html={iconosPaths[beneficio.icono]}
+                />
+                <span class="hero-benefit-text text-[12.5px] font-medium leading-[1.35] text-white md:text-[13.5px] md:font-semibold">
+                  {beneficio.etiqueta}
+                </span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /*
+   * El background ocupa siempre el hero completo.
+   * Solo modificamos el punto de recorte según dispositivo.
+   * Primer valor: horizontal (izq/der), segundo valor: vertical (arriba/abajo)
+   * Vertical: valores menores muestran más arriba, valores mayores muestran más abajo
+   */
+
+  /* Mobile: anclada arriba a la derecha para que el logo de la pared quede en la zona superior derecha */
+  .hero-background {
+    object-position: 100% 0%;
+    animation: hero-image-enter 1200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .hero-overlay-desktop {
+    background: linear-gradient(90deg, rgba(3, 18, 40, 0.98) 0%, rgba(3, 18, 40, 0.95) 24%, rgba(3, 18, 40, 0.84) 38%, rgba(3, 18, 40, 0.55) 52%, rgba(3, 18, 40, 0.18) 72%, rgba(3, 18, 40, 0.08) 100%);
+  }
+
+  .hero-overlay-mobile {
+    background: linear-gradient(180deg, rgba(3, 18, 40, 0.8) 0%, rgba(3, 18, 40, 0.55) 16%, rgba(3, 18, 40, 0.55) 34%, rgba(3, 18, 40, 0.85) 52%, rgba(3, 18, 40, 0.95) 100%);
+  }
+
+  .hero-glow {
+    background-image: radial-gradient(55% 50% at 88% 12%, rgba(11, 172, 219, 0.18) 0%, transparent 70%);
+  }
+
+  /* El padding inferior del contenido es mayor que --hero-fade, para que los beneficios no caigan en el fundido */
+  .hero-bg {
+    --hero-fade: 60px;
+    --hero-fade-mask: linear-gradient(
+      to bottom,
+      #000 calc(100% - var(--hero-fade)),
+      rgb(0 0 0 / 0.55) calc(100% - var(--hero-fade) * 0.45),
+      transparent 100%
+    );
+    -webkit-mask-image: var(--hero-fade-mask);
+    mask-image: var(--hero-fade-mask);
+  }
+
+  @media (min-width: 768px) {
+    .hero-bg {
+      --hero-fade: 90px;
+    }
+  }
+
+  .hero-cta-primary {
+    background-image: var(--gradient-blue);
+  }
+
+  .hero-benefit + .hero-benefit {
+    border-left: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent);
+  }
+
+  @keyframes hero-image-enter {
+    from {
+      transform: scale(1.035);
+      opacity: 0.7;
+    }
+
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .hero-background {
+      /*
+       * Si necesitás mover el médico/logo:
+       *
+       * Horizontal (primer valor):
+       * más a la derecha -> 60%, 65%, 70%
+       * más a la izquierda -> 45%, 40%
+       *
+       * Vertical (segundo valor):
+       * más arriba -> 30%, 25%
+       * más abajo -> 45%, 50%
+       */
+      object-position: 62% 35%;
+    }
+
+    /* Ken Burns continuo y muy sutil; solo desde tablet (sin loops en mobile) */
+    .hero-picture {
+      animation: hero-ken-burns 22s ease-in-out infinite alternate;
+      transform-origin: center;
+      will-change: transform;
+    }
+
+    @keyframes hero-ken-burns {
+      from {
+        transform: scale(1);
+      }
+
+      to {
+        transform: scale(1.045);
+      }
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .hero-background {
+      object-position: center 35%;
+    }
+  }
+
+  /* =====================================================
+     DESKTOP (1024 px o más)
+  ====================================================== */
+  @media (min-width: 1024px) {
+    /* La foto se corre a la derecha para que el logo de la pared quede libre de texto; el borde se funde con el petróleo */
+    .hero-bg {
+      --hero-fade: 120px;
+      background-color: var(--color-navy-deep);
+    }
+
+    .hero-picture {
+      left: 20%;
+      width: 80%;
+      transform-origin: right center;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
+      animation-duration: 32s;
+    }
+
+    .hero-background {
+      object-position: 30% 35%;
+    }
+
+    /*
+     * El oscuro de la izquierda llega más hacia el centro y nunca baja de ~22 %
+     * a la derecha: así la habitación blanca no se lee como otra imagen.
+     * El logo de la pared queda cerca del 70 % del ancho, con velo leve.
+     */
+    .hero-overlay-desktop {
+      background:
+        radial-gradient(
+          ellipse 62% 48% at 18% 100%,
+          color-mix(in srgb, var(--color-navy-deep) 88%, transparent) 0%,
+          color-mix(in srgb, var(--color-navy-deep) 68%, transparent) 55%,
+          transparent 100%
+        ),
+        linear-gradient(
+          90deg,
+          color-mix(in srgb, var(--color-navy-deep) 95%, transparent) 0%,
+          color-mix(in srgb, var(--color-navy-deep) 92%, transparent) 30%,
+          color-mix(in srgb, var(--color-navy-deep) 80%, transparent) 42%,
+          color-mix(in srgb, var(--color-navy) 55%, transparent) 54%,
+          color-mix(in srgb, var(--color-navy) 32%, transparent) 65%,
+          color-mix(in srgb, var(--color-navy) 22%, transparent) 78%,
+          color-mix(in srgb, var(--color-navy) 26%, transparent) 100%
+        );
+    }
+
+    .hero-glow {
+      background-image: radial-gradient(
+        50% 55% at 86% 8%,
+        color-mix(in srgb, var(--color-cyan) 20%, transparent) 0%,
+        transparent 70%
+      );
+    }
+
+    @keyframes hero-ken-burns {
+      from {
+        transform: scale(1);
+      }
+
+      to {
+        transform: scale(1.03);
+      }
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-text);
+      font-size: 13px;
+      color: var(--color-cyan-light);
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      width: 32px;
+      height: 2px;
+      border-radius: var(--radius-pill);
+      background-color: var(--color-cyan);
+    }
+
+    .hero-title {
+      font-family: var(--font-title);
+      font-weight: 700;
+      font-size: clamp(46px, calc(2.885vw + 16.5px), 58px);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      /* ~11em deja entrar "Digestivas de Chubut" y no "Centro de Endoscopías": tres líneas sin saltos forzados */
+      max-width: 11.1em;
+      text-wrap: balance;
+    }
+
+    .hero-lead {
+      font-family: var(--font-text);
+      font-size: 18px;
+      line-height: 1.65;
+      max-width: 33.5em;
+      margin-top: 20px;
+      color: color-mix(in srgb, var(--color-white) 86%, transparent);
+    }
+
+    .hero-cta {
+      min-height: 56px;
+      padding: 0 28px;
+      border: 1.5px solid transparent;
+      font-family: var(--font-text);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1;
+      transition: background-color 250ms ease, border-color 250ms ease, color 250ms ease,
+        box-shadow 250ms ease, translate 250ms ease;
+    }
+
+    .hero-cta-primary {
+      background-color: var(--color-cyan);
+      background-image: none;
+      color: var(--color-navy-deep);
+      box-shadow: 0 8px 24px color-mix(in srgb, var(--color-cyan) 28%, transparent);
+    }
+
+    .hero-cta-primary:hover {
+      background-color: var(--color-cyan-light);
+      filter: none;
+      box-shadow: 0 10px 28px color-mix(in srgb, var(--color-cyan) 38%, transparent);
+    }
+
+    .hero-cta:focus-visible {
+      outline-color: var(--color-white);
+    }
+
+    .hero-benefits {
+      display: flex;
+      align-items: center;
+    }
+
+    .hero-benefit {
+      flex: none;
+      flex-direction: row;
+      align-items: center;
+      gap: 14px;
+      padding: 0;
+      text-align: left;
+    }
+
+    .hero-benefit + .hero-benefit {
+      margin-left: 22px;
+      padding-left: 22px;
+      border-left-color: color-mix(in srgb, var(--color-white) 16%, transparent);
+    }
+
+    .hero-benefit-icon {
+      box-sizing: content-box;
+      width: 22px;
+      height: 22px;
+      padding: 9px;
+      border: 1px solid color-mix(in srgb, var(--color-cyan) 38%, transparent);
+      border-radius: var(--radius-pill);
+      background-color: color-mix(in srgb, var(--color-navy-deep) 55%, transparent);
+      color: var(--color-cyan-light);
+    }
+
+    /* Entre 1024 y 1279 la columna es angosta: la etiqueta puede ir en dos líneas */
+    .hero-benefit-text {
+      max-width: 9.5em;
+      font-family: var(--font-text);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+  }
+
+  /* Desde 1280 cada beneficio va en una línea; la fila puede pasar el ancho del texto sin llegar al logo */
+  @media (min-width: 1280px) {
+    .hero-benefit-text {
+      max-width: none;
+      white-space: nowrap;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-background,
+    .hero-picture {
+      animation: none;
+    }
+
+    .hero-cta,
+    .hero-cta:hover {
+      translate: none;
+      transition: none;
+    }
+  }
+</style>

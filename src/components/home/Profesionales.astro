@@ -1,0 +1,319 @@
+---
+import { profesionales, profesionalesBanda } from '../../data/profesionales.js';
+import { getWhatsappLink, whatsappMensajes } from '../../data/site.js';
+import { fuentesResponsive } from '../../lib/imagenes.js';
+import HexPattern from '../ui/HexPattern.astro';
+
+// Con más de un profesional, este bloque solo muestra el primero.
+// Para varios, pasar a una grilla de perfiles.
+const profesional = profesionales[0];
+const whatsappTurno = getWhatsappLink(whatsappMensajes.solicitarTurno);
+
+const equipoMobile = fuentesResponsive('equipo-mobile', [480, 720, 941]);
+const equipoDesktop = fuentesResponsive('equipo-desktop', [960, 1280, 1672]);
+const retrato = fuentesResponsive('profesional-mobile', [480, 720, 941]);
+---
+
+<section id="profesionales" class="relative w-full overflow-hidden bg-[var(--color-navy-deep)]">
+  <!-- Sin JavaScript, el contenido animado se ve en su posición final -->
+  <noscript>
+    <style is:inline>
+      #profesionales .reveal { opacity: 1; transform: none; }
+    </style>
+  </noscript>
+
+  <!-- =====================================================
+       BANDA DEL EQUIPO
+       La foto se ve completa en mobile y tablet; desde desktop se recorta
+       arriba y abajo sin tocar caras ni logo. El texto se superpone solo
+       sobre la zona inferior (debajo de las caras) y sigue sobre el navy.
+  ====================================================== -->
+  <div class="relative">
+    <div class="equipo-foto relative w-full overflow-hidden">
+      <picture>
+        <source media="(min-width: 768px)" type="image/avif" srcset={equipoDesktop.avif} sizes="100vw" />
+        <source media="(min-width: 768px)" type="image/webp" srcset={equipoDesktop.webp} sizes="100vw" />
+        <source type="image/avif" srcset={equipoMobile.avif} sizes="100vw" />
+        <source type="image/webp" srcset={equipoMobile.webp} sizes="100vw" />
+        <img
+          src={equipoMobile.fallback}
+          alt={profesionalesBanda.imagenAlt}
+          width="941"
+          height="1672"
+          loading="lazy"
+          class="equipo-foto-img absolute inset-0 h-full w-full object-cover"
+        />
+      </picture>
+      <div class="equipo-velo pointer-events-none absolute inset-0" aria-hidden="true"></div>
+    </div>
+
+    <div class="equipo-texto container relative z-10">
+      <div class="reveal max-w-[720px]">
+        <p class="eyebrow eyebrow-light">{profesionalesBanda.eyebrow}</p>
+        <h2 class="mt-4 text-balance text-white">{profesionalesBanda.titulo}</h2>
+        <p class="mt-4 max-w-[52ch] text-balance text-[16px] leading-[1.6] text-white/80 md:text-[17px]">
+          {profesionalesBanda.bajada}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       PERFIL DEL DR. GALARZA
+       Mobile: retrato con bloque desplazado arriba y texto debajo.
+       Desde tablet: retrato a la izquierda y texto a la derecha.
+  ====================================================== -->
+  <div class="relative pt-14 pb-16 md:pt-20 md:pb-16 lg:pb-16">
+    <div class="perfil-hex pointer-events-none absolute inset-0" aria-hidden="true">
+      <HexPattern color="var(--color-cyan)" opacity={0.05} />
+    </div>
+
+    <div class="container relative">
+      <div class="md:grid md:grid-cols-[minmax(0,40fr)_minmax(0,60fr)] md:items-center md:gap-12 lg:gap-16 xl:gap-20">
+        <div class="perfil-retrato reveal mb-10 md:mb-0">
+          <div class="perfil-retrato-bloque" aria-hidden="true"></div>
+          <div class="relative h-[420px] overflow-hidden rounded-[var(--radius-lg)] shadow-[var(--shadow-float)] md:aspect-[4/5] md:h-auto">
+            <picture>
+              <source type="image/avif" srcset={retrato.avif} sizes="(min-width: 1024px) 440px, (min-width: 768px) 40vw, 100vw" />
+              <source type="image/webp" srcset={retrato.webp} sizes="(min-width: 1024px) 440px, (min-width: 768px) 40vw, 100vw" />
+              <img
+                src={retrato.fallback}
+                alt={profesional.retratoAlt}
+                width="941"
+                height="1672"
+                loading="lazy"
+                class="h-full w-full object-cover object-[50%_18%]"
+              />
+            </picture>
+          </div>
+        </div>
+
+        <div>
+          <div class="reveal">
+            <h3 class="perfil-nombre text-white">{profesional.nombre}</h3>
+            <p class="perfil-rol mt-1.5 max-w-none text-[14px] font-semibold text-[var(--color-cyan)] md:mt-3 md:text-[16px]">
+              {profesional.rol}
+            </p>
+          </div>
+
+          <p class="reveal reveal-delay-1 mt-5 max-w-[54ch] text-[16px] leading-[1.65] text-white/80 md:mt-6 md:text-[17px]">
+            {profesional.parrafo}
+          </p>
+
+          <ul class="reveal reveal-delay-2 mt-6 flex flex-wrap gap-2">
+            {
+              profesional.datos.map((dato) => (
+                <li class="perfil-chip rounded-[var(--radius-pill)] px-3.5 py-1.5 text-[12.5px] font-medium text-white/90">
+                  {dato}
+                </li>
+              ))
+            }
+          </ul>
+
+          {
+            profesional.matricula && (
+              <p class="mt-4 max-w-none text-[13px] text-[var(--color-cyan)]">{profesional.matricula}</p>
+            )
+          }
+
+          <div class="reveal reveal-delay-3 mt-8 flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+            <a
+              href={whatsappTurno}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="perfil-cta inline-flex min-h-[48px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] bg-white px-6 text-[15px] font-semibold text-[var(--color-ink)] sm:w-auto"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.86 9.86 0 0 0 12.04 2Zm0 1.67c2.19 0 4.25.85 5.8 2.4a8.18 8.18 0 0 1 2.41 5.84c0 4.55-3.7 8.24-8.24 8.24a8.3 8.3 0 0 1-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.55 3.7-8.24 8.28-8.24Zm-4.53 4.7c-.16 0-.42.06-.64.3-.22.24-.85.83-.85 2.02 0 1.19.87 2.34 1 2.5.12.16 1.7 2.6 4.13 3.64 2.04.87 2.46.7 2.9.65.44-.04 1.42-.58 1.62-1.14.2-.56.2-1.04.14-1.14-.06-.1-.22-.16-.46-.28-.24-.12-1.42-.7-1.64-.78-.22-.08-.38-.12-.54.12-.16.24-.62.78-.76.94-.14.16-.28.18-.52.06-.24-.12-1.02-.38-1.94-1.2-.72-.64-1.2-1.44-1.34-1.68-.14-.24-.02-.37.1-.5.11-.1.24-.28.36-.42.12-.14.16-.24.24-.4.08-.16.04-.3-.02-.42-.06-.12-.54-1.32-.75-1.8-.2-.47-.4-.4-.55-.4h-.48Z" />
+              </svg>
+              {profesional.acciones.turno}
+            </a>
+
+            <a
+              href="#trayectoria"
+              class="perfil-link inline-flex min-h-[44px] items-center justify-center gap-2 text-[15px] font-semibold text-white/85 sm:justify-start"
+            >
+              {profesional.acciones.trayectoria}
+              <svg
+                class="perfil-link-flecha"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 5v14" />
+                <path d="M6 13l6 6 6-6" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Mobile: foto vertical completa. El texto arranca al 66 % del alto, debajo de las caras. */
+  .equipo-foto {
+    aspect-ratio: 941 / 1672;
+  }
+
+  .equipo-foto-img {
+    object-position: 50% 100%;
+  }
+
+  .equipo-velo {
+    background-image: linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 50%,
+      color-mix(in srgb, var(--color-navy-deep) 72%, transparent) 62%,
+      color-mix(in srgb, var(--color-navy-deep) 90%, transparent) 72%,
+      color-mix(in srgb, var(--color-navy-deep) 96%, transparent) 86%,
+      var(--color-navy-deep) 100%
+    );
+  }
+
+  .equipo-texto {
+    margin-top: -60vw;
+  }
+
+  /* Tablet: foto horizontal completa; el texto se apoya sobre el 20 % inferior */
+  @media (min-width: 768px) {
+    .equipo-foto {
+      aspect-ratio: 1672 / 941;
+    }
+
+    .equipo-velo {
+      background-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 62%,
+        color-mix(in srgb, var(--color-navy-deep) 60%, transparent) 82%,
+        var(--color-navy-deep) 100%
+      );
+    }
+
+    .equipo-texto {
+      margin-top: -11vw;
+    }
+  }
+
+  /*
+   * Desktop: alto de aprox. 80 % de pantalla y encuadre bajo, para que se vea el torso
+   * de la doctora de adelante. El mínimo de 50vw evita que, en pantallas muy anchas,
+   * el recorte superior llegue al logo de la pared.
+   * El texto va debajo de la foto, sin pisar las caras.
+   */
+  @media (min-width: 1024px) {
+    .equipo-foto {
+      aspect-ratio: auto;
+      height: max(560px, 80svh, 50vw);
+    }
+
+    .equipo-foto-img {
+      object-position: 50% 67%;
+    }
+
+    .equipo-velo {
+      background-image: linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 82%,
+        color-mix(in srgb, var(--color-navy-deep) 60%, transparent) 93%,
+        var(--color-navy-deep) 100%
+      );
+    }
+
+    .equipo-texto {
+      margin-top: 8px;
+    }
+  }
+
+  .perfil-hex {
+    mask-image: linear-gradient(to bottom, transparent 0, black 160px);
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 160px);
+  }
+
+  /* Retrato: bloque azul desplazado detrás, mismo recurso que la foto de Nosotros */
+  .perfil-retrato {
+    --retrato-offset: 12px;
+    position: relative;
+    margin-right: var(--retrato-offset);
+  }
+
+  .perfil-retrato-bloque {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius-lg);
+    background-image: var(--gradient-blue);
+    transform: translate(var(--retrato-offset), var(--retrato-offset));
+  }
+
+  @media (min-width: 768px) {
+    .perfil-retrato {
+      --retrato-offset: 24px;
+      margin-bottom: var(--retrato-offset);
+    }
+  }
+
+  .perfil-nombre {
+    font-size: 26px;
+    line-height: 1.15;
+  }
+
+  @media (min-width: 768px) {
+    .perfil-nombre {
+      font-size: 40px;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .perfil-nombre {
+      font-size: 46px;
+    }
+  }
+
+  .perfil-chip {
+    border: 1px solid color-mix(in srgb, var(--color-white) 28%, transparent);
+    background-color: color-mix(in srgb, var(--color-white) 5%, transparent);
+  }
+
+  .perfil-cta,
+  .perfil-link,
+  .perfil-link-flecha {
+    transition: background-color 200ms ease, color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .perfil-cta:hover {
+      background-color: var(--color-surface);
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    .perfil-link:hover {
+      color: var(--color-cyan);
+    }
+
+    .perfil-link:hover .perfil-link-flecha {
+      transform: translateY(2px);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .perfil-cta,
+    .perfil-link,
+    .perfil-link-flecha {
+      transition: none;
+    }
+
+    .perfil-link:hover .perfil-link-flecha {
+      transform: none;
+    }
+  }
+</style>
