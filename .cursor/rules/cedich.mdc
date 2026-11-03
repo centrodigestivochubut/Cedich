@@ -8,8 +8,7 @@ alwaysApply: true
 Sitio institucional de **CEDICH — Centro de Endoscopías Digestivas de Chubut** (Rawson, Chubut, Argentina).
 El objetivo es informar al paciente y derivar la consulta a WhatsApp. Es un sitio estático de una sola página
 (más dos páginas legales). No hay backend, base de datos, panel, sistema de turnos, login, blog ni páginas extra.
-Hoy es una DEMO para presentar al cliente; el alcance lo marca la propuesta comercial.
-
+Sitio aprobado por el cliente, en etapa de ajustes finales; el alcance lo marca la propuesta comercial.
 El nombre oficial es "de Chubut" (no "del Chubut"). Si lo ves escrito distinto en algún lado, avisá.
 
 ## Cómo trabajar

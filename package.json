@@ -1,7 +1,8 @@
 {
-  "name": "cedichdemo",
-  "type": "module",
-  "version": "0.0.1",
+  "name": "cedich-web",
+   "private": true,
+   "type": "module",
+   "version": "1.0.0",
   "engines": {
     "node": ">=22.12.0"
   },
