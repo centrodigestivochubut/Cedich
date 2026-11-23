@@ -1,9 +1,12 @@
 ---
 import { site, getWhatsappLink, whatsappMensajes } from '../../data/site.js';
 import { ubicacionTextos } from '../../data/ubicacion.js';
-import HexPattern from '../ui/HexPattern.astro';
+import { fuentesResponsive } from '../../lib/imagenes.js';
 
 const whatsappLink = getWhatsappLink(whatsappMensajes.solicitarTurno);
+
+const fondoDesktop = fuentesResponsive('contacto-fondo-desktop', [960, 1440, 1920]);
+const fondoMobile = fuentesResponsive('contacto-fondo-mobile', [480, 720, 960]);
 
 /** @type {Record<string, string>} */
 const iconos = {
@@ -56,7 +59,10 @@ const filas = [
 ];
 ---
 
-<section id="contacto" class="relative w-full overflow-hidden bg-[var(--color-surface)] py-16 md:py-24">
+<section
+  id="contacto"
+  class="relative w-full overflow-hidden border-b border-white/10 bg-[var(--color-navy-deep)] py-16 md:py-24"
+>
   <!-- Sin JavaScript, el contenido animado se ve en su posición final -->
   <noscript>
     <style is:inline>
@@ -64,7 +70,22 @@ const filas = [
     </style>
   </noscript>
 
-  <HexPattern color="var(--color-blue)" opacity={0.03} />
+  <!-- Foto de la entrada de CEDICH con velo navy: la puerta y el logo se adivinan sobre todo detrás del mapa -->
+  <div class="absolute inset-0" aria-hidden="true">
+    <picture>
+      <source media="(min-width: 1024px)" type="image/avif" srcset={fondoDesktop.avif} sizes="100vw" />
+      <source media="(min-width: 1024px)" type="image/webp" srcset={fondoDesktop.webp} sizes="100vw" />
+      <source type="image/avif" srcset={fondoMobile.avif} sizes="100vw" />
+      <source type="image/webp" srcset={fondoMobile.webp} sizes="100vw" />
+      <img
+        src={fondoMobile.fallback}
+        alt=""
+        loading="lazy"
+        class="absolute inset-0 h-full w-full object-cover object-center"
+      />
+    </picture>
+    <div class="contacto-velo absolute inset-0"></div>
+  </div>
 
   <!--
     Mobile y tablet: encabezado, datos, mapa y botones, en una columna.
@@ -73,8 +94,8 @@ const filas = [
   <div class="container relative">
     <div class="contacto-grid">
       <div class="contacto-intro">
-        <p class="eyebrow eyebrow-dark">{ubicacionTextos.eyebrow}</p>
-        <h2 class="mt-4 text-[var(--color-ink)]">{ubicacionTextos.titulo}</h2>
+        <p class="eyebrow eyebrow-light">{ubicacionTextos.eyebrow}</p>
+        <h2 class="mt-4 text-white">{ubicacionTextos.titulo}</h2>
       </div>
 
       <ul class="contacto-datos mt-7 flex flex-col gap-2 lg:mt-8">
@@ -82,7 +103,7 @@ const filas = [
           filas.map((fila, index) => {
             const contenido = (
               <>
-                <span class="contacto-icono flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-cyan-pale)] text-[var(--color-blue-dark)]">
+                <span class="contacto-icono flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[var(--color-cyan)]">
                   <svg
                     width="20"
                     height="20"
@@ -97,7 +118,7 @@ const filas = [
                   />
                 </span>
                 <span class="flex flex-col pt-0.5">
-                  <span class="text-[15px] font-semibold leading-[1.35] text-[var(--color-ink)]">{fila.titulo}</span>
+                  <span class="text-[15px] font-semibold leading-[1.35] text-white">{fila.titulo}</span>
                   {fila.detalle.map((linea) => (
                     <span class="contacto-detalle mt-0.5 text-[15px] leading-[1.5]">{linea}</span>
                   ))}
@@ -128,7 +149,7 @@ const filas = [
             href={site.googleFichaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="contacto-opiniones ml-[58px] inline-flex min-h-[44px] items-center gap-2 text-[14px] font-semibold text-[var(--color-blue-dark)]"
+            class="contacto-opiniones ml-[58px] inline-flex min-h-[44px] items-center gap-2 text-[14px] font-semibold text-[var(--color-cyan)]"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
               <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />
@@ -138,7 +159,7 @@ const filas = [
         </li>
       </ul>
 
-      <div class="contacto-mapa-wrap reveal reveal-delay-2 relative mt-8 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white shadow-[var(--shadow-card)] lg:mt-0" data-mapa>
+      <div class="contacto-mapa-wrap reveal reveal-delay-2 relative mt-8 overflow-hidden rounded-[var(--radius-lg)] border border-white/[0.12] bg-white shadow-[var(--shadow-float)] lg:mt-0" data-mapa>
         <iframe
           src={site.googleMapaEmbed}
           title={ubicacionTextos.tituloMapa}
@@ -172,7 +193,7 @@ const filas = [
           href={site.googleComoLlegarUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="contacto-cta-secundario inline-flex min-h-[48px] w-full items-center justify-center gap-2 whitespace-nowrap rounded-[var(--radius-pill)] bg-white px-6 text-[15px] font-semibold text-[var(--color-blue-dark)] lg:w-auto"
+          class="contacto-cta-secundario inline-flex min-h-[48px] w-full items-center justify-center gap-2           whitespace-nowrap rounded-[var(--radius-pill)] px-6 text-[15px] font-semibold text-white lg:w-auto"
         >
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
             <path d="M3 11l19-9-9 19-2-8-8-2Z" />
@@ -194,9 +215,13 @@ const filas = [
     height: 260px;
   }
 
-  /* Gris de detalle más oscuro que --color-muted: 7,6:1 sobre blanco */
+  /* Velo navy sobre la foto: parejo en mobile y tablet, degradado horizontal en desktop */
+  .contacto-velo {
+    background-color: color-mix(in srgb, var(--color-navy-deep) 88%, transparent);
+  }
+
   .contacto-detalle {
-    color: color-mix(in srgb, var(--color-ink) 25%, var(--color-muted));
+    color: color-mix(in srgb, var(--color-white) 75%, transparent);
   }
 
   .contacto-fila--link {
@@ -204,7 +229,13 @@ const filas = [
   }
 
   .contacto-icono {
-    transition: background-color 200ms ease, color 200ms ease;
+    border: 1px solid color-mix(in srgb, var(--color-white) 14%, transparent);
+    background-color: color-mix(in srgb, var(--color-white) 8%, transparent);
+    transition: background-color 200ms ease;
+  }
+
+  #contacto a:focus-visible {
+    outline-color: var(--color-white);
   }
 
   /* Mapa bloqueado (mobile y tablet con JS): el iframe no recibe gestos hasta tocar el aviso */
@@ -220,6 +251,15 @@ const filas = [
 
   /* Desktop: datos a la izquierda, mapa a todo el alto a la derecha */
   @media (min-width: 1024px) {
+    .contacto-velo {
+      background-color: transparent;
+      background-image: linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--color-navy-deep) 93%, transparent) 0%,
+        color-mix(in srgb, var(--color-navy-deep) 68%, transparent) 100%
+      );
+    }
+
     .contacto-grid {
       display: grid;
       grid-template-columns: minmax(0, 42fr) minmax(0, 58fr);
@@ -262,18 +302,18 @@ const filas = [
   }
 
   .contacto-cta-secundario {
-    border: 1.5px solid var(--color-blue);
-    transition: background-color 200ms ease, color 200ms ease;
+    border: 1.5px solid color-mix(in srgb, var(--color-white) 40%, transparent);
+    background-color: transparent;
+    transition: background-color 200ms ease;
   }
 
   @media (hover: hover) and (pointer: fine) {
     .contacto-fila--link:hover {
-      background-color: color-mix(in srgb, var(--color-blue) 6%, white);
+      background-color: color-mix(in srgb, var(--color-white) 6%, transparent);
     }
 
     .contacto-fila--link:hover .contacto-icono {
-      background-color: var(--color-blue);
-      color: var(--color-white);
+      background-color: color-mix(in srgb, var(--color-white) 16%, transparent);
     }
 
     .contacto-opiniones:hover .contacto-opiniones-texto {
@@ -286,8 +326,7 @@ const filas = [
     }
 
     .contacto-cta-secundario:hover {
-      background-color: var(--color-blue);
-      color: var(--color-white);
+      background-color: color-mix(in srgb, var(--color-white) 8%, transparent);
     }
   }
 
