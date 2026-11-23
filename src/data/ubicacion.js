@@ -12,6 +12,7 @@ export const ubicacionTextos = {
   avisoMapa: 'Tocá para mover el mapa',
   tituloMapa: 'Ubicación de CEDICH en Google Maps',
   opiniones: 'Ver opiniones en Google',
+  dejarOpinion: 'Dejanos tu opinión',
   botones: {
     turno: 'Solicitar turno',
     comoLlegar: 'Cómo llegar',

@@ -144,17 +144,30 @@ const filas = [
             );
           })
         }
-        <li class={`reveal reveal-delay-${filas.length}`}>
+        <li class={`reveal reveal-delay-${filas.length} ml-[58px] flex flex-col items-start sm:flex-row sm:items-center sm:gap-3`}>
           <a
             href={site.googleFichaUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="contacto-opiniones ml-[58px] inline-flex min-h-[44px] items-center gap-2 text-[14px] font-semibold text-[var(--color-cyan)]"
+            class="contacto-opiniones inline-flex min-h-[44px] items-center gap-2 text-[14px] font-semibold text-[var(--color-cyan)]"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
               <path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9L12 3.5Z" />
             </svg>
             <span class="contacto-opiniones-texto">{ubicacionTextos.opiniones}</span>
+          </a>
+          <span class="contacto-detalle hidden sm:inline" aria-hidden="true">·</span>
+          <a
+            href={site.googleOpinionUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="contacto-opiniones inline-flex min-h-[44px] items-center gap-2 text-[14px] font-semibold text-[var(--color-cyan)]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" class="shrink-0" aria-hidden="true">
+              <path d="M4 20h4L19 9a2.1 2.1 0 0 0-3-3L5 17l-1 3Z" />
+              <path d="M14.5 7.5l3 3" />
+            </svg>
+            <span class="contacto-opiniones-texto">{ubicacionTextos.dejarOpinion}</span>
           </a>
         </li>
       </ul>

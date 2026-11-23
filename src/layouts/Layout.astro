@@ -25,6 +25,31 @@ const esHome = Astro.url.pathname === '/';
 const baseUrl = (Astro.site ?? Astro.url.origin).toString().replace(/\/$/, '');
 const logoUrl = `${baseUrl}/logos/logo-cedich-128.png`;
 
+const diasSchema = {
+  lunes: 'Monday',
+  martes: 'Tuesday',
+  miercoles: 'Wednesday',
+  jueves: 'Thursday',
+  viernes: 'Friday',
+  sabado: 'Saturday',
+  domingo: 'Sunday',
+};
+
+// "13:00 a 17:00" -> opens / closes; los días sin horario válido se omiten
+const horariosSchema = site.horarios.flatMap(({ dia, franja }) => {
+  const dayOfWeek = diasSchema[dia.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()];
+  const [, opens, closes] = franja.match(/(\d{1,2}:\d{2})\s*a\s*(\d{1,2}:\d{2})/) ?? [];
+  if (!dayOfWeek || !opens || !closes) return [];
+  return [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek,
+      opens: opens.padStart(5, '0'),
+      closes: closes.padStart(5, '0'),
+    },
+  ];
+});
+
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'MedicalOrganization',
@@ -49,6 +74,7 @@ const jsonLd = {
   },
   hasMap: site.googleFichaUrl,
   telephone: site.telefonoInternacional,
+  openingHoursSpecification: horariosSchema,
   sameAs: [site.instagram.url, site.facebook.url, site.googleFichaUrl].filter(Boolean),
 };
 ---
