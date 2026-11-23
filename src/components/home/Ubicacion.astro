@@ -16,7 +16,7 @@ const iconos = {
     '<path d="M6 3h3l2 5-2.5 1.5a11 11 0 0 0 5 5L15 12l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 4 5a2 2 0 0 1 2-2Z" />',
   instagram:
     '<rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />',
-  // facebook: '<path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h3l1-4h-4V8Z" />',
+  facebook: '<path d="M14 8h3V4h-3a4 4 0 0 0-4 4v2H8v4h2v6h4v-6h3l1-4h-4V8Z" />',
 };
 
 const { datos } = ubicacionTextos;
@@ -30,7 +30,6 @@ const filas = [
     externo: true,
   },
   {
-    // PENDIENTE CLIENTE: confirmar horarios reales de atención (ver site.js)
     clave: 'horarios',
     titulo: datos.horarios,
     detalle: site.horarios.map((horario) => `${horario.dia} de ${horario.franja}`),
@@ -48,14 +47,13 @@ const filas = [
     href: site.instagram.url,
     externo: true,
   },
-  // PENDIENTE CLIENTE: fila de Facebook, lista para activar si se confirma
-  // {
-  //   clave: 'facebook',
-  //   titulo: datos.facebook,
-  //   detalle: ['cedichendoscopia'],
-  //   href: site.facebook.url,
-  //   externo: true,
-  // },
+  {
+    clave: 'facebook',
+    titulo: datos.facebook,
+    detalle: ['cedichendoscopia'],
+    href: site.facebook.url,
+    externo: true,
+  },
 ];
 ---
 
@@ -144,7 +142,7 @@ const filas = [
             );
           })
         }
-        <li class={`reveal reveal-delay-${filas.length} ml-[58px] flex flex-col items-start sm:flex-row sm:items-center sm:gap-3`}>
+        <li class={`reveal reveal-delay-${Math.min(filas.length, 4)} ml-[58px] flex flex-col items-start sm:flex-row sm:items-center sm:gap-3`}>
           <a
             href={site.googleFichaUrl}
             target="_blank"

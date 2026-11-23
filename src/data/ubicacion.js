@@ -6,8 +6,7 @@ export const ubicacionTextos = {
     horarios: 'Horarios',
     telefono: 'Teléfono',
     instagram: 'Instagram',
-    // PENDIENTE CLIENTE: confirmar si se muestra Facebook en Contacto
-    // facebook: 'Facebook',
+    facebook: 'Facebook',
   },
   avisoMapa: 'Tocá para mover el mapa',
   tituloMapa: 'Ubicación de CEDICH en Google Maps',

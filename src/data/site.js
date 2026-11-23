@@ -10,7 +10,7 @@ export const site = {
   codigoPostal: '9103',
   pais: 'Argentina',
   referencia: 'Dentro del Instituto Cardiovascular',
-  // PENDIENTE CLIENTE: confirmar horarios reales de atención
+  // Horarios iguales a los de la ficha de Google de CEDICH
   horarios: [
     { dia: 'Lunes', franja: '13:00 a 17:00' },
     { dia: 'Miércoles', franja: '09:00 a 12:00' },
@@ -19,7 +19,6 @@ export const site = {
     url: 'https://www.instagram.com/cedich_arg/',
     usuario: '@cedich_arg',
   },
-  // PENDIENTE CLIENTE: confirmar que esta es la página oficial de Facebook de CEDICH
   facebook: {
     url: 'https://www.facebook.com/cedichendoscopia/',
   },
