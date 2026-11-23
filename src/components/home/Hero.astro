@@ -5,8 +5,26 @@ import { fuentesResponsive } from '../../lib/imagenes.js';
 
 const whatsappTurno = getWhatsappLink(whatsappMensajes.solicitarTurno);
 
-const fuentesMobile = fuentesResponsive('hero-mobile', [480, 720, 941]);
-const fuentesDesktop = fuentesResponsive('hero-desktop', [960, 1280, 1672]);
+// Los encuadres de los datos viajan como variables CSS; la primera diapositiva sin
+// encuadre conserva los object-position del <style>.
+const diapositivas = hero.diapositivas.map((diapositiva, indice) => {
+  const { encuadreDesktop, encuadreMobile } = diapositiva;
+  const variables = [
+    encuadreMobile && `--encuadre-mobile: ${encuadreMobile}`,
+    encuadreDesktop && `--encuadre-desktop: ${encuadreDesktop}`,
+  ].filter(Boolean);
+
+  return {
+    mobile: fuentesResponsive(diapositiva.mobile, [480, 720, 941]),
+    desktop: fuentesResponsive(diapositiva.desktop, [960, 1280, 1672]),
+    usaEncuadre: indice > 0 || variables.length > 0,
+    variables: variables.length > 0 ? variables.join('; ') : undefined,
+  };
+});
+
+const hayCarrusel = diapositivas.length > 1;
+const etiquetaIndicador = (n) =>
+  hero.etiquetaIndicador.replace('{n}', String(n)).replace('{total}', String(diapositivas.length));
 
 /** @type {Record<string, string>} */
 const iconosPaths = {
@@ -24,39 +42,60 @@ const iconosPaths = {
        y deja ver el blanco con el que arranca Nosotros. -->
   <div class="hero-bg absolute inset-0">
     <!-- =====================================================
-         IMAGEN RESPONSIVE DE FONDO
-         Mobile: public/imagenes/optimizadas/hero-mobile-*
-         Desktop: public/imagenes/optimizadas/hero-desktop-*
+         DIAPOSITIVAS DE FONDO (carrusel)
+         Apiladas en el mismo lugar; solo cambia cuál está activa.
+         Mobile: public/imagenes/optimizadas/<nombre>-mobile-*
+         Desktop: public/imagenes/optimizadas/<nombre>-desktop-*
          Versiones AVIF/WebP en varios anchos.
          sizes: con object-cover la imagen se recorta por alto, por eso
          en mobile y tablet necesita más ancho que el viewport.
+         Las capas de abajo (overlays, tinte, resplandor) quedan una sola vez
+         por encima de todas las diapositivas.
     ====================================================== -->
-    <picture class="hero-picture absolute inset-0 block h-full w-full">
-      <source
-        media="(min-width: 768px)"
-        type="image/avif"
-        srcset={fuentesDesktop.avif}
-        sizes="(min-width: 1280px) 100vw, 1250px"
-      />
-      <source
-        media="(min-width: 768px)"
-        type="image/webp"
-        srcset={fuentesDesktop.webp}
-        sizes="(min-width: 1280px) 100vw, 1250px"
-      />
-      <source type="image/avif" srcset={fuentesMobile.avif} sizes="820px" />
-      <source type="image/webp" srcset={fuentesMobile.webp} sizes="820px" />
+    <div class="hero-slides absolute inset-0 isolate">
+      {
+        diapositivas.map((diapositiva, indice) => (
+          <div
+            class:list={[
+              'hero-slide absolute inset-0',
+              indice === 0 && 'hero-slide--inicial',
+              diapositiva.usaEncuadre && 'hero-slide--encuadre',
+            ]}
+            style={diapositiva.variables}
+          >
+            <picture class="hero-picture absolute inset-0 block h-full w-full">
+              <source
+                media="(min-width: 768px)"
+                type="image/avif"
+                srcset={diapositiva.desktop.avif}
+                sizes="(min-width: 1280px) 100vw, 1250px"
+              />
+              <source
+                media="(min-width: 768px)"
+                type="image/webp"
+                srcset={diapositiva.desktop.webp}
+                sizes="(min-width: 1280px) 100vw, 1250px"
+              />
+              <source type="image/avif" srcset={diapositiva.mobile.avif} sizes="820px" />
+              <source type="image/webp" srcset={diapositiva.mobile.webp} sizes="820px" />
 
-      <img
-        src={fuentesMobile.fallback}
-        alt=""
-        width="1080"
-        height="1920"
-        loading="eager"
-        fetchpriority="high"
-        class="hero-background absolute inset-0 h-full w-full object-cover"
-      />
-    </picture>
+              <img
+                src={diapositiva.mobile.fallback}
+                alt=""
+                width="1080"
+                height="1920"
+                loading={indice === 0 ? 'eager' : 'lazy'}
+                fetchpriority={indice === 0 ? 'high' : 'low'}
+                class:list={[
+                  'hero-background absolute inset-0 h-full w-full object-cover',
+                  indice === 0 && 'hero-background--entrada',
+                ]}
+              />
+            </picture>
+          </div>
+        ))
+      }
+    </div>
 
     <!-- =====================================================
          OVERLAY DESKTOP
@@ -184,8 +223,84 @@ const iconosPaths = {
       </div>
     </div>
   </div>
+
+  <!-- Indicadores: ocultos hasta que el script los activa (sin JavaScript, solo se ve la primera foto) -->
+  {
+    hayCarrusel && (
+      <div class="hero-indicadores absolute inset-x-0 z-20" hidden>
+        <div class="container flex justify-center gap-1.5 md:justify-end">
+          {diapositivas.map((_, indice) => (
+            <button
+              type="button"
+              class="hero-dot relative h-11 w-6 shrink-0"
+              aria-label={etiquetaIndicador(indice + 1)}
+            >
+              <span class="hero-dot-bar absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 overflow-hidden rounded-[var(--radius-pill)] bg-white/[0.35]">
+                <span class="hero-dot-fill block h-full w-full bg-[var(--color-cyan)]" />
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+    )
+  }
 </section>
 
+<script>
+  const hero = document.getElementById('inicio');
+  const slides = hero ? Array.from(hero.querySelectorAll<HTMLElement>('.hero-slide')) : [];
+  const dots = hero ? Array.from(hero.querySelectorAll<HTMLElement>('.hero-dot')) : [];
+  const indicadores = hero?.querySelector<HTMLElement>('.hero-indicadores');
+
+  if (hero && indicadores && slides.length > 1 && dots.length === slides.length) {
+    let actual = 0;
+
+    function mostrar(indice: number) {
+      actual = indice;
+      slides.forEach((slide, i) => slide.classList.toggle('is-active', i === indice));
+
+      // Se quita y se vuelve a poner la clase para reiniciar la barra de progreso, incluso en la misma foto
+      dots.forEach((dot) => {
+        dot.classList.remove('is-active');
+        dot.removeAttribute('aria-current');
+      });
+      void dots[indice].offsetWidth;
+      dots[indice].classList.add('is-active');
+      dots[indice].setAttribute('aria-current', 'true');
+    }
+
+    // Se fuerza el estilo inicial para que la primera foto también haga su zoom
+    void slides[0].offsetWidth;
+    mostrar(0);
+    slides[0].classList.remove('hero-slide--inicial');
+    indicadores.hidden = false;
+
+    dots.forEach((dot, i) => dot.addEventListener('click', () => mostrar(i)));
+
+    // El avance lo marca el final de la barra de progreso (5 s), así que pausar la animación pausa la rotación
+    indicadores.addEventListener('animationend', (evento) => {
+      if ((evento.target as HTMLElement).classList.contains('hero-dot-fill')) {
+        mostrar((actual + 1) % slides.length);
+      }
+    });
+
+    let fueraDePantalla = false;
+    let pestanaOculta = document.hidden;
+    const actualizarPausa = () => hero.classList.toggle('is-pausada', fueraDePantalla || pestanaOculta);
+
+    new IntersectionObserver(([entrada]) => {
+      fueraDePantalla = !entrada.isIntersecting;
+      actualizarPausa();
+    }).observe(hero);
+
+    document.addEventListener('visibilitychange', () => {
+      pestanaOculta = document.hidden;
+      actualizarPausa();
+    });
+
+    actualizarPausa();
+  }
+</script>
 <style>
   /*
    * El background ocupa siempre el hero completo.
@@ -197,15 +312,63 @@ const iconosPaths = {
   /* Mobile: anclada arriba a la derecha para que el logo de la pared quede en la zona superior derecha */
   .hero-background {
     object-position: 100% 0%;
+  }
+
+  /* Solo la primera diapositiva tiene animación de entrada */
+  .hero-background--entrada {
     animation: hero-image-enter 1200ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /*
+   * Diapositivas apiladas. La activa se muestra por encima y aparece con un fundido; la anterior
+   * se mantiene debajo hasta que termina, para que el cruce no deje ver el fondo.
+   * Sin JavaScript queda visible solo la primera (--inicial).
+   */
+  .hero-slide {
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0s linear 1200ms;
+  }
+
+  .hero-slide--inicial,
+  .hero-slide.is-active {
+    opacity: 1;
+    transition: opacity 1200ms ease;
+  }
+
+  .hero-slide.is-active {
+    z-index: 2;
+  }
+
+  /* Zoom lento mientras la foto está activa; al salir vuelve a 1 recién cuando ya no se ve */
+  .hero-picture {
+    transform: scale(1);
+    transition: transform 0s linear 1200ms;
+    will-change: transform;
+  }
+
+  .hero-slide.is-active .hero-picture {
+    transform: scale(1.05);
+    transition: transform 6200ms linear;
+  }
+
+  /* Encuadres que vienen de los datos (variables --encuadre-*) */
+  .hero-slide--encuadre .hero-background {
+    object-position: var(--encuadre-mobile, center);
+  }
+
+  @media (min-width: 768px) {
+    .hero-slide--encuadre .hero-background {
+      object-position: var(--encuadre-desktop, center);
+    }
+  }
+
   .hero-overlay-desktop {
-    background: linear-gradient(90deg, rgba(3, 18, 40, 0.98) 0%, rgba(3, 18, 40, 0.95) 24%, rgba(3, 18, 40, 0.84) 38%, rgba(3, 18, 40, 0.55) 52%, rgba(3, 18, 40, 0.18) 72%, rgba(3, 18, 40, 0.08) 100%);
+    background: linear-gradient(90deg, rgba(3, 18, 40, 0.85) 0%, rgba(3, 18, 40, 0.8) 24%, rgba(3, 18, 40, 0.68) 38%, rgba(3, 18, 40, 0.42) 52%, rgba(3, 18, 40, 0.12) 72%, rgba(3, 18, 40, 0.04) 100%);
   }
 
   .hero-overlay-mobile {
-    background: linear-gradient(180deg, rgba(3, 18, 40, 0.8) 0%, rgba(3, 18, 40, 0.55) 16%, rgba(3, 18, 40, 0.55) 34%, rgba(3, 18, 40, 0.85) 52%, rgba(3, 18, 40, 0.95) 100%);
+    background: linear-gradient(180deg, rgba(3, 18, 40, 0.65) 0%, rgba(3, 18, 40, 0.4) 16%, rgba(3, 18, 40, 0.4) 34%, rgba(3, 18, 40, 0.72) 52%, rgba(3, 18, 40, 0.88) 100%);
   }
 
   .hero-glow {
@@ -267,21 +430,9 @@ const iconosPaths = {
       object-position: 62% 35%;
     }
 
-    /* Ken Burns continuo y muy sutil; solo desde tablet (sin loops en mobile) */
+    /* Desde tablet el zoom parte del centro */
     .hero-picture {
-      animation: hero-ken-burns 22s ease-in-out infinite alternate;
       transform-origin: center;
-      will-change: transform;
-    }
-
-    @keyframes hero-ken-burns {
-      from {
-        transform: scale(1);
-      }
-
-      to {
-        transform: scale(1.045);
-      }
     }
   }
 
@@ -306,7 +457,6 @@ const iconosPaths = {
       width: 80%;
       transform-origin: right center;
       mask-image: linear-gradient(90deg, transparent 0%, #000 22%);
-      animation-duration: 32s;
     }
 
     .hero-background {
@@ -322,19 +472,19 @@ const iconosPaths = {
       background:
         radial-gradient(
           ellipse 62% 48% at 18% 100%,
-          color-mix(in srgb, var(--color-navy-deep) 88%, transparent) 0%,
-          color-mix(in srgb, var(--color-navy-deep) 68%, transparent) 55%,
+          color-mix(in srgb, var(--color-navy-deep) 70%, transparent) 0%,
+          color-mix(in srgb, var(--color-navy-deep) 50%, transparent) 55%,
           transparent 100%
         ),
         linear-gradient(
           90deg,
-          color-mix(in srgb, var(--color-navy-deep) 95%, transparent) 0%,
-          color-mix(in srgb, var(--color-navy-deep) 92%, transparent) 30%,
-          color-mix(in srgb, var(--color-navy-deep) 80%, transparent) 42%,
-          color-mix(in srgb, var(--color-navy) 55%, transparent) 54%,
-          color-mix(in srgb, var(--color-navy) 32%, transparent) 65%,
-          color-mix(in srgb, var(--color-navy) 22%, transparent) 78%,
-          color-mix(in srgb, var(--color-navy) 26%, transparent) 100%
+          color-mix(in srgb, var(--color-navy-deep) 80%, transparent) 0%,
+          color-mix(in srgb, var(--color-navy-deep) 76%, transparent) 30%,
+          color-mix(in srgb, var(--color-navy-deep) 64%, transparent) 42%,
+          color-mix(in srgb, var(--color-navy) 40%, transparent) 54%,
+          color-mix(in srgb, var(--color-navy) 20%, transparent) 65%,
+          color-mix(in srgb, var(--color-navy) 10%, transparent) 78%,
+          color-mix(in srgb, var(--color-navy) 12%, transparent) 100%
         );
     }
 
@@ -344,16 +494,6 @@ const iconosPaths = {
         color-mix(in srgb, var(--color-cyan) 20%, transparent) 0%,
         transparent 70%
       );
-    }
-
-    @keyframes hero-ken-burns {
-      from {
-        transform: scale(1);
-      }
-
-      to {
-        transform: scale(1.03);
-      }
     }
 
     .hero-eyebrow {
@@ -471,10 +611,91 @@ const iconosPaths = {
     }
   }
 
+  /* =====================================================
+     INDICADORES DEL CARRUSEL
+     Quedan sobre la zona del hero que todavía es opaca (antes del fundido inferior)
+     y debajo de los beneficios en mobile.
+  ====================================================== */
+  .hero-indicadores {
+    bottom: 40px;
+  }
+
+  @media (min-width: 768px) {
+    .hero-indicadores {
+      bottom: 70px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-indicadores {
+      bottom: 100px;
+    }
+  }
+
+  .hero-dot {
+    transition: width 300ms ease;
+  }
+
+  .hero-dot.is-active {
+    width: 40px;
+  }
+
+  .hero-dot:focus-visible {
+    outline-color: var(--color-white);
+  }
+
+  .hero-dot-fill {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  .hero-dot.is-active .hero-dot-fill {
+    animation: hero-progress 5s linear forwards;
+  }
+
+  @keyframes hero-progress {
+    from {
+      transform: scaleX(0);
+    }
+
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .hero.is-pausada .hero-dot.is-active .hero-dot-fill {
+    animation-play-state: paused;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .hero:hover .hero-dot.is-active .hero-dot-fill {
+      animation-play-state: paused;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .hero-background,
-    .hero-picture {
+    .hero-background--entrada,
+    .hero-picture,
+    .hero-slide,
+    .hero-dot {
       animation: none;
+      transition: none;
+    }
+
+    .hero-slide.is-active .hero-picture {
+      transform: none;
+      transition: none;
+    }
+
+    .hero-slide--inicial,
+    .hero-slide.is-active {
+      transition: none;
+    }
+
+    /* Sin rotación ni progreso: la foto activa se marca con la barra completa */
+    .hero-dot.is-active .hero-dot-fill {
+      animation: none;
+      transform: scaleX(1);
     }
 
     .hero-cta,
