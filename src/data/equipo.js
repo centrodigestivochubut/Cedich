@@ -1,8 +1,7 @@
 export const equipoEncabezado = {
   eyebrow: 'NUESTRO EQUIPO',
   titulo: 'Las personas detrás de cada estudio',
-  bajada:
-    'Médicos, instrumentadoras y secretaría trabajan juntos para que tu estudio sea seguro, puntual y sin vueltas.',
+  bajada: 'Las personas que te reciben, te acompañan durante el estudio y te explican cada paso.',
 };
 
 // `foto` es el nombre base de la imagen optimizada (ej. 'equipo-maria-perez'); vacío si todavía no hay foto.

@@ -55,6 +55,8 @@ const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 
             {
               area.integrantes.map((integrante, indice) => {
                 const foto = integrante.foto ? fuentesResponsive(integrante.foto, [320, 640]) : null;
+                // Solo en mobile: recorte más cerca de la cara
+                const miniatura = integrante.foto ? fuentesResponsive(`${integrante.foto}-thumb`, [176, 264]) : null;
                 const matricula = integrante.matricula;
                 return (
                   <li class={`reveal reveal-delay-${indice % 4}`}>
@@ -62,6 +64,8 @@ const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 
                       <div class="eq-foto relative aspect-[4/5] w-[88px] shrink-0 overflow-hidden rounded-[var(--radius)] md:w-full md:rounded-none">
                         {foto ? (
                           <picture>
+                            <source media="(max-width: 767px)" type="image/avif" srcset={miniatura.avif} sizes="88px" />
+                            <source media="(max-width: 767px)" type="image/webp" srcset={miniatura.webp} sizes="88px" />
                             <source type="image/avif" srcset={foto.avif} sizes={SIZES} />
                             <source type="image/webp" srcset={foto.webp} sizes={SIZES} />
                             <img

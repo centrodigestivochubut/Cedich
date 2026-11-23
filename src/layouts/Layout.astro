@@ -12,6 +12,7 @@ const {
   title = 'CEDICH · Endoscopía y colonoscopía en Rawson, Chubut',
   description = 'Centro de Endoscopías Digestivas de Chubut. Endoscopía digestiva alta, colonoscopía y tests de aire espirado en Rawson. Coordiná tu turno por WhatsApp.',
   ogImage = '/og-cedich.jpg',
+  noindex = false,
 } = Astro.props;
 
 // URLs canónicas sin barra final, consistentes con navegación interna
@@ -87,7 +88,7 @@ const jsonLd = {
     <meta name="theme-color" content="#001A28" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonicalUrl} />}
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -115,7 +116,7 @@ const jsonLd = {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Montserrat:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Montserrat:wght@700&family=DM+Sans:wght@400;500;600;700&display=swap"
     />
 
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

@@ -24,10 +24,9 @@ export const nosotros = {
       icono: 'informe',
     },
   ],
-  // PENDIENTE CLIENTE: cuando estén las fotos del equipo, volver a "Conocer al equipo"
   cta: {
-    texto: 'Conocé al Dr. Galarza',
-    destino: '#profesionales',
+    texto: 'Conocé al equipo',
+    destino: '#equipo',
   },
   etiquetaFoto: 'Equipo CEDICH · Rawson',
   // Nombre de la imagen optimizada en public/imagenes/optimizadas (vacío muestra el placeholder)

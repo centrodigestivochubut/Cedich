@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HexPattern from '../components/ui/HexPattern.astro';
+import { pagina404 } from '../data/pagina404.js';
+import { getWhatsappLink, whatsappMensajes } from '../data/site.js';
+
+const whatsappConsulta = getWhatsappLink(whatsappMensajes.consultaGeneral);
+---
+
+<Layout title={pagina404.tituloPestana} noindex>
+  <section class="relative flex min-h-[100svh] items-center justify-center overflow-hidden bg-[var(--color-navy-deep)] pt-[76px] pb-16 lg:pt-[82px]">
+    <!-- Sin JavaScript, el contenido animado se ve en su posición final -->
+    <noscript>
+      <style is:inline>
+        #error-404 .reveal { opacity: 1; transform: none; }
+      </style>
+    </noscript>
+
+    <HexPattern color="var(--color-cyan)" opacity={0.05} />
+
+    <div id="error-404" class="container relative flex flex-col items-center text-center">
+      <p
+        class="reveal font-display text-[80px] font-bold leading-none text-white/10 md:text-[120px]"
+        aria-hidden="true"
+      >
+        404
+      </p>
+
+      <p class="reveal reveal-delay-1 eyebrow eyebrow-light mt-2">{pagina404.eyebrow}</p>
+      <h1 class="reveal reveal-delay-1 mt-4 text-balance text-white">{pagina404.titulo}</h1>
+      <p class="reveal reveal-delay-2 mt-4 max-w-[520px] text-balance text-[16px] leading-[1.6] text-white/75 md:text-[17px]">
+        {pagina404.bajada}
+      </p>
+
+      <div class="reveal reveal-delay-3 mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+        <a
+          href="/"
+          class="error-cta-principal inline-flex min-h-[48px] w-full items-center justify-center whitespace-nowrap rounded-[var(--radius-pill)] bg-white px-6 text-[15px] font-semibold text-[var(--color-ink)] sm:w-auto"
+        >
+          {pagina404.botones.inicio}
+        </a>
+        <a
+          href={whatsappConsulta}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="error-cta-secundario inline-flex min-h-[48px] w-full items-center justify-center whitespace-nowrap rounded-[var(--radius-pill)] px-6 text-[15px] font-semibold text-white sm:w-auto"
+        >
+          {pagina404.botones.contacto}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .error-cta-principal,
+  .error-cta-secundario {
+    transition: background-color 200ms ease, box-shadow 200ms ease;
+  }
+
+  .error-cta-secundario {
+    border: 1.5px solid color-mix(in srgb, var(--color-white) 40%, transparent);
+  }
+
+  a:focus-visible {
+    outline-color: var(--color-white);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .error-cta-principal:hover {
+      background-color: var(--color-surface);
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    .error-cta-secundario:hover {
+      background-color: color-mix(in srgb, var(--color-white) 8%, transparent);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .error-cta-principal,
+    .error-cta-secundario {
+      transition: none;
+    }
+  }
+</style>
