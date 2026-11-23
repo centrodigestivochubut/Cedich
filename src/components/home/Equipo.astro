@@ -1,0 +1,169 @@
+---
+import { equipoEncabezado, equipoAreas } from '../../data/equipo.js';
+import { fuentesResponsive } from '../../lib/imagenes.js';
+import SectionHeading from '../ui/SectionHeading.astro';
+
+const TRATAMIENTOS = /^(dr|dra|lic)\.?$/i;
+
+// Iniciales del primer y último nombre, sin el tratamiento (Dr./Dra./Lic.)
+function iniciales(nombre) {
+  const palabras = nombre
+    .split(/\s+/)
+    .filter((palabra) => palabra && !TRATAMIENTOS.test(palabra));
+  if (palabras.length === 0) return '';
+  const primera = palabras[0][0];
+  const ultima = palabras.length > 1 ? palabras[palabras.length - 1][0] : '';
+  return (primera + ultima).toUpperCase();
+}
+
+const mostrarAreas = equipoAreas.length > 1;
+const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 768px) 45vw, 88px';
+---
+
+<section
+  id="equipo"
+  data-seccion-de="profesionales"
+  class="bg-[var(--color-surface)] py-14 md:py-24"
+>
+  <!-- Sin JavaScript, el contenido animado se ve en su posición final -->
+  <noscript>
+    <style is:inline>
+      #equipo .reveal { opacity: 1; transform: none; }
+    </style>
+  </noscript>
+
+  <div class="container">
+    <SectionHeading
+      eyebrow={equipoEncabezado.eyebrow}
+      titulo={equipoEncabezado.titulo}
+      bajada={equipoEncabezado.bajada}
+      tema="claro"
+      alineacion="izquierda"
+    />
+
+    {
+      equipoAreas.map((area, indiceArea) => (
+        <div class={indiceArea === 0 ? 'mt-9 md:mt-12' : 'mt-12 md:mt-16'}>
+          {mostrarAreas && (
+            <div class="mb-6 flex items-center gap-4">
+              <h3 class="eq-area shrink-0 text-[var(--color-blue-dark)]">{area.nombre}</h3>
+              <span class="h-px flex-1 bg-[var(--color-border)]" aria-hidden="true" />
+            </div>
+          )}
+
+          <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+            {
+              area.integrantes.map((integrante, indice) => {
+                const foto = integrante.foto ? fuentesResponsive(integrante.foto, [320, 640]) : null;
+                const matricula = integrante.matricula;
+                return (
+                  <li class={`reveal reveal-delay-${indice % 4}`}>
+                    <article class="eq-card flex h-full items-start gap-4 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white p-4 shadow-[var(--shadow-card)] md:flex-col md:items-stretch md:gap-0 md:p-0">
+                      <div class="eq-foto relative aspect-[4/5] w-[88px] shrink-0 overflow-hidden rounded-[var(--radius)] md:w-full md:rounded-none">
+                        {foto ? (
+                          <picture>
+                            <source type="image/avif" srcset={foto.avif} sizes={SIZES} />
+                            <source type="image/webp" srcset={foto.webp} sizes={SIZES} />
+                            <img
+                              src={foto.fallback}
+                              alt={integrante.fotoAlt}
+                              width="640"
+                              height="800"
+                              loading="lazy"
+                              class="eq-foto-img h-full w-full object-cover object-[50%_20%]"
+                            />
+                          </picture>
+                        ) : (
+                          <div
+                            class="eq-iniciales flex h-full w-full items-center justify-center bg-[var(--color-cyan-pale)] text-[var(--color-blue-dark)]"
+                            role="img"
+                            aria-label={integrante.fotoAlt}
+                          >
+                            <span aria-hidden="true">{iniciales(integrante.nombre)}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      <div class="flex min-w-0 flex-1 flex-col md:p-5">
+                        <h4 class="eq-nombre text-[17px] font-semibold leading-[1.25] text-[var(--color-ink)] md:text-[19px]">
+                          {integrante.nombre}
+                        </h4>
+                        <p class="mt-1 max-w-none text-[13px] font-semibold leading-[1.35] text-[var(--color-blue-dark)] md:text-[14px]">
+                          {integrante.cargo}
+                        </p>
+                        <p class="mt-2 max-w-none text-[14px] leading-[1.55] text-[var(--color-muted)] md:text-[15px]">
+                          {integrante.descripcion}
+                        </p>
+                        {matricula && (
+                          <p class="mt-auto max-w-none pt-3 text-[12px] leading-[1.4] text-[var(--color-muted)] md:text-[13px]">
+                            {matricula}
+                          </p>
+                        )}
+                      </div>
+                    </article>
+                  </li>
+                );
+              })
+            }
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .eq-area {
+    font-family: var(--font-display);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .eq-nombre {
+    font-family: var(--font-display);
+  }
+
+  .eq-iniciales {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  @media (min-width: 768px) {
+    .eq-iniciales {
+      font-size: 44px;
+    }
+  }
+
+  .eq-card {
+    transition: box-shadow 250ms ease;
+  }
+
+  .eq-foto-img {
+    transition: transform 400ms ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .eq-card:hover {
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    .eq-card:hover .eq-foto-img {
+      transform: scale(1.03);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .eq-card,
+    .eq-foto-img {
+      transition: none;
+    }
+
+    .eq-card:hover .eq-foto-img {
+      transform: none;
+    }
+  }
+</style>
