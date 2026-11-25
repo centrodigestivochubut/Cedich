@@ -74,7 +74,7 @@ const fondoMobile = fuentesResponsive('equipo-fondo-mobile', [480, 720, 960]);
             </div>
           )}
 
-          <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+          <ul class="eq-lista flex flex-wrap justify-center gap-4 md:gap-6">
             {
               area.integrantes.map((integrante, indice) => {
                 const foto = integrante.foto ? fuentesResponsive(integrante.foto, [320, 640]) : null;
@@ -82,7 +82,7 @@ const fondoMobile = fuentesResponsive('equipo-fondo-mobile', [480, 720, 960]);
                 const miniatura = integrante.foto ? fuentesResponsive(`${integrante.foto}-thumb`, [176, 264]) : null;
                 const matricula = integrante.matricula;
                 return (
-                  <li class={`reveal reveal-delay-${indice % 4}`}>
+                  <li class={`eq-item reveal reveal-delay-${indice % 4}`}>
                     <article class="eq-card flex h-full items-start gap-4 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white p-4 md:flex-col md:items-stretch md:gap-0 md:p-0">
                       <div class="eq-foto relative aspect-[4/5] w-[88px] shrink-0 overflow-hidden rounded-[var(--radius)] md:w-full md:rounded-none lg:aspect-square">
                         {foto ? (
@@ -140,6 +140,30 @@ const fondoMobile = fuentesResponsive('equipo-fondo-mobile', [480, 720, 960]);
 </section>
 
 <style>
+  /* Grilla centrada: si la última fila queda incompleta, sus tarjetas se centran.
+     1 columna en mobile, 2 en tablet, 3 desde 1024px y 4 desde 1280px. */
+  .eq-item {
+    width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .eq-item {
+      width: calc((100% - 1.5rem) / 2);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .eq-item {
+      width: calc((100% - 3rem) / 3);
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .eq-item {
+      width: calc((100% - 4.5rem) / 4);
+    }
+  }
+
   .eq-area {
     font-family: var(--font-display);
     font-size: 12px;

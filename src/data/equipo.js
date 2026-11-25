@@ -26,8 +26,7 @@ export const equipoAreas = [
         descripcion:
           'Especialista en soporte parenteral y falla intestinal. Realiza endoscopías altas y bajas diagnósticas.',
         matricula: 'MP 5506 · MN 179285',
-        // PENDIENTE CLIENTE: foto (mientras tanto se muestran las iniciales)
-        foto: '',
+        foto: 'equipo-camila-caceres',
         fotoAlt: 'Dra. Camila Andrea Cáceres en CEDICH',
       },
       {
@@ -36,9 +35,17 @@ export const equipoAreas = [
         // PENDIENTE CLIENTE: validar texto con el Dr. Deltin
         descripcion: 'Se ocupa de la sedación y del cuidado del paciente durante los estudios.',
         matricula: 'MP 5359',
-        // PENDIENTE CLIENTE: foto (mientras tanto se muestran las iniciales)
-        foto: '',
+        foto: 'equipo-nicolas-deltin',
         fotoAlt: 'Dr. Nicolás Deltin en CEDICH',
+      },
+      {
+        nombre: 'Dr. Jesús Caliva',
+        cargo: 'Médico anestesiólogo',
+        // PENDIENTE CLIENTE: validar texto con el Dr. Caliva
+        descripcion: 'Se ocupa de la sedación y del cuidado del paciente durante los estudios.',
+        matricula: 'MP 4989',
+        foto: 'equipo-jesus-caliva',
+        fotoAlt: 'Dr. Jesús Caliva en CEDICH',
       },
       {
         nombre: 'Lic. Jessica I. Beltrán',
