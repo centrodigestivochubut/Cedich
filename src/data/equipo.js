@@ -6,9 +6,11 @@ export const equipoEncabezado = {
 
 // `foto` es el nombre base de la imagen optimizada (ej. 'equipo-maria-perez'); vacío si todavía no hay foto.
 // `matricula` queda vacía si no corresponde.
+// Un solo grupo: el equipo se muestra unido, sin subtítulos de área.
+// Orden: médicos primero, después instrumentación y secretaría.
 export const equipoAreas = [
   {
-    nombre: 'Equipo médico',
+    nombre: 'Equipo CEDICH',
     integrantes: [
       {
         nombre: 'Dr. Jarvey Valbuena Ortiz',
@@ -38,11 +40,6 @@ export const equipoAreas = [
         foto: '',
         fotoAlt: 'Dr. Nicolás Deltin en CEDICH',
       },
-    ],
-  },
-  {
-    nombre: 'Instrumentación y secretaría',
-    integrantes: [
       {
         nombre: 'Lic. Jessica I. Beltrán',
         cargo: 'Instrumentación quirúrgica',

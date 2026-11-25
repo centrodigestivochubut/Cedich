@@ -17,13 +17,15 @@ function iniciales(nombre) {
 }
 
 const mostrarAreas = equipoAreas.length > 1;
-const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 768px) 45vw, 88px';
+const SIZES = '(min-width: 1280px) 368px, (min-width: 1024px) 30vw, (min-width: 768px) 45vw, 88px';
+const fondoDesktop = fuentesResponsive('equipo-fondo-desktop', [960, 1440, 1920]);
+const fondoMobile = fuentesResponsive('equipo-fondo-mobile', [480, 720, 960]);
 ---
 
 <section
   id="equipo"
   data-seccion-de="profesionales"
-  class="bg-[var(--color-surface)] py-14 md:py-24"
+  class="bg-[var(--color-surface)] pb-14 md:pb-24"
 >
   <!-- Sin JavaScript, el contenido animado se ve en su posición final -->
   <noscript>
@@ -32,18 +34,39 @@ const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 
     </style>
   </noscript>
 
-  <div class="container">
-    <SectionHeading
-      eyebrow={equipoEncabezado.eyebrow}
-      titulo={equipoEncabezado.titulo}
-      bajada={equipoEncabezado.bajada}
-      tema="claro"
-      alineacion="izquierda"
-    />
+  <!-- La banda mide lo que el encabezado más el padding inferior de este contenedor -->
+  <div class="relative isolate bg-[var(--color-navy-deep)] pb-10 pt-14 md:pb-[120px] md:pt-24 lg:pb-[100px]">
+    <div class="absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <picture>
+        <source media="(min-width: 1024px)" type="image/avif" srcset={fondoDesktop.avif} sizes="100vw" />
+        <source media="(min-width: 1024px)" type="image/webp" srcset={fondoDesktop.webp} sizes="100vw" />
+        <source type="image/avif" srcset={fondoMobile.avif} sizes="100vw" />
+        <source type="image/webp" srcset={fondoMobile.webp} sizes="100vw" />
+        <img
+          src={fondoMobile.fallback}
+          alt=""
+          loading="lazy"
+          class="h-full w-full object-cover object-[center_40%]"
+        />
+      </picture>
+      <div class="eq-velo absolute inset-0"></div>
+    </div>
 
+    <div class="container">
+      <SectionHeading
+        eyebrow={equipoEncabezado.eyebrow}
+        titulo={equipoEncabezado.titulo}
+        bajada={equipoEncabezado.bajada}
+        tema="oscuro"
+        alineacion="izquierda"
+      />
+    </div>
+  </div>
+
+  <div class="container relative z-10">
     {
       equipoAreas.map((area, indiceArea) => (
-        <div class={indiceArea === 0 ? 'mt-9 md:mt-12' : 'mt-12 md:mt-16'}>
+        <div class={indiceArea === 0 ? '-mt-3 md:-mt-[72px] lg:-mt-[60px]' : 'mt-12 md:mt-16'}>
           {mostrarAreas && (
             <div class="mb-6 flex items-center gap-4">
               <h3 class="eq-area shrink-0 text-[var(--color-blue-dark)]">{area.nombre}</h3>
@@ -51,7 +74,7 @@ const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 
             </div>
           )}
 
-          <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4">
+          <ul class="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
             {
               area.integrantes.map((integrante, indice) => {
                 const foto = integrante.foto ? fuentesResponsive(integrante.foto, [320, 640]) : null;
@@ -60,8 +83,8 @@ const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 
                 const matricula = integrante.matricula;
                 return (
                   <li class={`reveal reveal-delay-${indice % 4}`}>
-                    <article class="eq-card flex h-full items-start gap-4 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white p-4 shadow-[var(--shadow-card)] md:flex-col md:items-stretch md:gap-0 md:p-0">
-                      <div class="eq-foto relative aspect-[4/5] w-[88px] shrink-0 overflow-hidden rounded-[var(--radius)] md:w-full md:rounded-none">
+                    <article class="eq-card flex h-full items-start gap-4 overflow-hidden rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-white p-4 md:flex-col md:items-stretch md:gap-0 md:p-0">
+                      <div class="eq-foto relative aspect-[4/5] w-[88px] shrink-0 overflow-hidden rounded-[var(--radius)] md:w-full md:rounded-none lg:aspect-square">
                         {foto ? (
                           <picture>
                             <source media="(max-width: 767px)" type="image/avif" srcset={miniatura.avif} sizes="88px" />
@@ -74,7 +97,7 @@ const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 
                               width="640"
                               height="800"
                               loading="lazy"
-                              class="eq-foto-img h-full w-full object-cover object-[50%_20%]"
+                              class="eq-foto-img h-full w-full object-cover object-[50%_20%] lg:object-[center_30%]"
                             />
                           </picture>
                         ) : (
@@ -142,7 +165,16 @@ const SIZES = '(min-width: 1280px) 272px, (min-width: 1024px) 30vw, (min-width: 
     }
   }
 
+  .eq-velo {
+    background: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-navy-deep) 86%, transparent),
+      color-mix(in srgb, var(--color-navy-deep) 94%, transparent)
+    );
+  }
+
   .eq-card {
+    box-shadow: 0 10px 32px color-mix(in srgb, var(--color-navy-deep) 18%, transparent);
     transition: box-shadow 250ms ease;
   }
 
