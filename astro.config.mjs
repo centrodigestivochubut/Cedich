@@ -7,9 +7,9 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // PENDIENTE CLIENTE: reemplazar por el dominio definitivo cuando se conecte;
-  // de esta URL depende que las vistas previas al compartir (WhatsApp, etc.) funcionen.
-  site: 'https://cedichdemo.vercel.app',
+  // Dominio oficial. De esta URL dependen el sitemap, la URL canónica,
+  // los datos estructurados y la vista previa al compartir (WhatsApp, redes).
+  site: 'https://www.cedich.com.ar',
 
   // URLs sin barra final, consistentes con la navegación interna
   trailingSlash: 'never',
@@ -18,6 +18,7 @@ export default defineConfig({
     react(),
     sitemap({
       filter: (page) => !page.includes('/404'),
+      lastmod: new Date(),
     }),
   ],
 

@@ -2,7 +2,7 @@ export const site = {
   nombreCorto: 'CEDICH',
   nombreCompleto: 'Centro de Endoscopías Digestivas de Chubut',
   telefono: '280 453 3933',
-  telefonoInternacional: '+54 280 453 3933',
+  telefonoInternacional: '+54 9 280 453-3933',
   whatsapp: '5492804533933',
   direccion: 'Pedro Martínez 45',
   localidad: 'Rawson',
@@ -27,9 +27,14 @@ export const site = {
     url: '',
     usuario: '',
   },
-  // PENDIENTE CLIENTE: La ficha de Google figura como 'Centro de Endoscopias Digestivas del Chubut | CEDICH'.
-  // Se va a corregir a 'Centro de Endoscopías Digestivas de Chubut' para que coincida con la web.
-  // Mantener iguales en web y ficha: nombre, dirección, teléfono y horarios.
+  // Nombre oficial: 'Centro de Endoscopías Digestivas de Chubut'. La ficha de Google figura como
+  // 'Centro de Endoscopias Digestivas del Chubut | CEDICH' y se va a unificar a este nombre.
+  // Mantener iguales en web, ficha de Google, Instagram y Facebook: nombre, dirección, teléfono y horarios.
+  // Variantes del nombre que circulan en Google y redes (solo para datos estructurados).
+  nombresAlternativos: ['Centro de Endoscopias Digestivas del Chubut', 'Centro de Endoscopía Digestiva de Chubut'],
+  // Localidades a las que atiende CEDICH (solo para datos estructurados)
+  areaAtencion: ['Rawson', 'Playa Unión', 'Trelew', 'Gaiman', 'Dolavon', 'Puerto Madryn'],
+  googlePlaceId: 'ChIJNTsRit1XAb4RzLz86jnfkGE',
   coordenadas: { latitud: -43.3013863, longitud: -65.1080839 },
   // Ficha oficial de CEDICH en Google Maps (nombre, opiniones, fotos y ruta).
   // Link alternativo al mismo destino, solo como referencia: https://share.google/B02CDs5fb5ZbxURgJ

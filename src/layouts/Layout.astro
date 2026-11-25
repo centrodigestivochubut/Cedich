@@ -1,5 +1,6 @@
 ---
 import { site } from '../data/site.js';
+import { gruposServicios } from '../data/servicios.js';
 
 import Header from '../components/layout/Header.astro';
 import MobileNav from '../components/layout/MobileNav.jsx';
@@ -51,32 +52,60 @@ const horariosSchema = site.horarios.flatMap(({ dia, franja }) => {
   ];
 });
 
+// Servicios para los datos estructurados, tomados de servicios.js
+const serviciosSchema = gruposServicios.flatMap(({ estudios }) =>
+  estudios.map(({ titulo, subtitulo }) => ({
+    '@type': 'MedicalProcedure',
+    name: subtitulo ? `${titulo} (${subtitulo})` : titulo,
+  }))
+);
+
+const organizacionId = `${baseUrl}/#organizacion`;
+
 const jsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'MedicalOrganization',
-  name: site.nombreCompleto,
-  alternateName: site.nombreCorto,
-  description: 'Centro de Endoscopías Digestivas de Chubut. Especialistas en endoscopía digestiva alta, colonoscopía, CPRE y tests de aire espirado.',
-  url: baseUrl,
-  logo: logoUrl,
-  image: ogImageUrl.toString(),
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: site.direccion,
-    addressLocality: site.localidad,
-    addressRegion: site.provincia,
-    postalCode: site.codigoPostal,
-    addressCountry: site.pais,
-  },
-  geo: {
-    '@type': 'GeoCoordinates',
-    latitude: site.coordenadas.latitud,
-    longitude: site.coordenadas.longitud,
-  },
-  hasMap: site.googleFichaUrl,
-  telephone: site.telefonoInternacional,
-  openingHoursSpecification: horariosSchema,
-  sameAs: [site.instagram.url, site.facebook.url, site.googleFichaUrl].filter(Boolean),
+  '@graph': [
+    {
+      '@type': 'MedicalClinic',
+      '@id': organizacionId,
+      name: site.nombreCompleto,
+      alternateName: [site.nombreCorto, ...site.nombresAlternativos],
+      description: 'Centro de Endoscopías Digestivas de Chubut en Rawson. Endoscopía digestiva alta, colonoscopía, CPRE y tests de aire espirado.',
+      url: `${baseUrl}/`,
+      logo: logoUrl,
+      image: ogImageUrl.toString(),
+      telephone: site.telefonoInternacional,
+      medicalSpecialty: 'Gastroenterologic',
+      isAcceptingNewPatients: true,
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: site.direccion,
+        addressLocality: site.localidad,
+        addressRegion: site.provincia,
+        postalCode: site.codigoPostal,
+        addressCountry: 'AR',
+      },
+      geo: {
+        '@type': 'GeoCoordinates',
+        latitude: site.coordenadas.latitud,
+        longitude: site.coordenadas.longitud,
+      },
+      hasMap: `https://www.google.com/maps/place/?q=place_id:${site.googlePlaceId}`,
+      areaServed: site.areaAtencion.map((name) => ({ '@type': 'City', name })),
+      openingHoursSpecification: horariosSchema,
+      availableService: serviciosSchema,
+      sameAs: [site.instagram.url, site.facebook.url, site.googleFichaUrl].filter(Boolean),
+    },
+    {
+      '@type': 'WebSite',
+      '@id': `${baseUrl}/#website`,
+      name: site.nombreCorto,
+      alternateName: site.nombreCompleto,
+      url: `${baseUrl}/`,
+      inLanguage: 'es-AR',
+      publisher: { '@id': organizacionId },
+    },
+  ],
 };
 ---
 
