@@ -28,6 +28,16 @@ export const equipoAreas = [
         foto: '',
         fotoAlt: 'Dra. Camila Andrea Cáceres en CEDICH',
       },
+      {
+        nombre: 'Dr. Nicolás Deltin',
+        cargo: 'Médico anestesiólogo',
+        // PENDIENTE CLIENTE: validar texto con el Dr. Deltin
+        descripcion: 'Se ocupa de la sedación y del cuidado del paciente durante los estudios.',
+        matricula: 'MP 5359',
+        // PENDIENTE CLIENTE: foto (mientras tanto se muestran las iniciales)
+        foto: '',
+        fotoAlt: 'Dr. Nicolás Deltin en CEDICH',
+      },
     ],
   },
   {
@@ -53,13 +63,13 @@ export const equipoAreas = [
       },
       {
         // PENDIENTE CLIENTE: apellido
-        nombre: 'Yamila',
+        nombre: 'Carolina',
         cargo: 'Secretaría y tests de aire espirado',
         // PENDIENTE CLIENTE: validar texto
         descripcion: 'Coordina los turnos, recibe a los pacientes y realiza los tests de aire espirado.',
         matricula: '',
-        foto: 'equipo-yamila',
-        fotoAlt: 'Yamila, secretaria de CEDICH',
+        foto: 'equipo-carolina',
+        fotoAlt: 'Carolina, secretaria de CEDICH',
       },
     ],
   },
