@@ -8,32 +8,43 @@ export const equipoEncabezado = {
 // `matricula` queda vacía si no corresponde.
 export const equipoAreas = [
   {
-    nombre: 'Equipo CEDICH',
+    nombre: 'Equipo médico',
     integrantes: [
       {
-        nombre: 'Dr. Jarvey Valbuena',
-        // PENDIENTE CLIENTE: confirmar especialidad
-        cargo: 'Médico',
-        // PENDIENTE CLIENTE: validar con el Dr. Valbuena
-        descripcion: 'Realiza estudios endoscópicos en CEDICH junto al Dr. Andrés Galarza.',
-        // PENDIENTE CLIENTE
-        matricula: '',
+        nombre: 'Dr. Jarvey Valbuena Ortiz',
+        cargo: 'Médico cirujano',
+        descripcion: 'Realiza endoscopías altas y bajas diagnósticas.',
+        matricula: 'MP 5832',
         foto: 'equipo-jarvey-valbuena',
-        fotoAlt: 'Dr. Jarvey Valbuena en CEDICH',
+        fotoAlt: 'Dr. Jarvey Valbuena Ortiz en CEDICH',
       },
       {
-        nombre: 'Jessica Beltrán',
-        cargo: 'Instrumentadora quirúrgica',
-        // PENDIENTE CLIENTE: validar texto
-        descripcion: 'Asiste al equipo médico durante los estudios y acompaña a cada paciente en la sala.',
-        matricula: '',
+        nombre: 'Dra. Camila Andrea Cáceres',
+        cargo: 'Médica cirujana',
+        descripcion:
+          'Especialista en soporte parenteral y falla intestinal. Realiza endoscopías altas y bajas diagnósticas.',
+        matricula: 'MP 5506 · MN 179285',
+        // PENDIENTE CLIENTE: foto (mientras tanto se muestran las iniciales)
+        foto: '',
+        fotoAlt: 'Dra. Camila Andrea Cáceres en CEDICH',
+      },
+    ],
+  },
+  {
+    nombre: 'Instrumentación y secretaría',
+    integrantes: [
+      {
+        nombre: 'Lic. Jessica I. Beltrán',
+        cargo: 'Instrumentación quirúrgica',
+        descripcion: 'Asiste al equipo médico en las endoscopías y en las CPRE.',
+        matricula: 'MP 0082',
         foto: 'equipo-jessica-beltran',
-        fotoAlt: 'Jessica Beltrán, instrumentadora quirúrgica de CEDICH',
+        fotoAlt: 'Lic. Jessica I. Beltrán, instrumentadora quirúrgica de CEDICH',
       },
       {
         nombre: 'Sofía Rivero',
         cargo: 'Instrumentadora quirúrgica',
-        // PENDIENTE CLIENTE: validar texto
+        // PENDIENTE CLIENTE: validar texto, título y matrícula
         descripcion:
           'Asiste al equipo médico durante los estudios y se ocupa de la preparación de la sala y el equipamiento.',
         matricula: '',
