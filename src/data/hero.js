@@ -33,5 +33,4 @@ export const hero = {
       encuadreMobile: 'center 40%',
     },
   ],
-  etiquetaIndicador: 'Ver imagen {n} de {total}',
 };

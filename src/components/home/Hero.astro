@@ -22,10 +22,6 @@ const diapositivas = hero.diapositivas.map((diapositiva, indice) => {
   };
 });
 
-const hayCarrusel = diapositivas.length > 1;
-const etiquetaIndicador = (n) =>
-  hero.etiquetaIndicador.replace('{n}', String(n)).replace('{total}', String(diapositivas.length));
-
 /** @type {Record<string, string>} */
 const iconosPaths = {
   personas:
@@ -224,81 +220,65 @@ const iconosPaths = {
     </div>
   </div>
 
-  <!-- Indicadores: ocultos hasta que el script los activa (sin JavaScript, solo se ve la primera foto) -->
-  {
-    hayCarrusel && (
-      <div class="hero-indicadores absolute inset-x-0 z-20" hidden>
-        <div class="container flex justify-center gap-1.5 md:justify-end">
-          {diapositivas.map((_, indice) => (
-            <button
-              type="button"
-              class="hero-dot relative h-11 w-6 shrink-0"
-              aria-label={etiquetaIndicador(indice + 1)}
-            >
-              <span class="hero-dot-bar absolute inset-x-0 top-1/2 h-[3px] -translate-y-1/2 overflow-hidden rounded-[var(--radius-pill)] bg-white/[0.35]">
-                <span class="hero-dot-fill block h-full w-full bg-[var(--color-cyan)]" />
-              </span>
-            </button>
-          ))}
-        </div>
-      </div>
-    )
-  }
 </section>
 
 <script>
+  // Carrusel del fondo: cambia de foto cada 5 s con un fundido.
+  // Se pausa con el mouse encima, con el hero fuera de pantalla o con la pestaña oculta.
+  // Con "reducir movimiento" no rota: queda la primera foto.
   const hero = document.getElementById('inicio');
   const slides = hero ? Array.from(hero.querySelectorAll<HTMLElement>('.hero-slide')) : [];
-  const dots = hero ? Array.from(hero.querySelectorAll<HTMLElement>('.hero-dot')) : [];
-  const indicadores = hero?.querySelector<HTMLElement>('.hero-indicadores');
+  const reducirMovimiento = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (hero && indicadores && slides.length > 1 && dots.length === slides.length) {
+  if (hero && slides.length > 1 && !reducirMovimiento) {
+    const DURACION = 5000;
     let actual = 0;
+    let temporizador: number | undefined;
+    let fueraDePantalla = false;
+    let pestanaOculta = document.hidden;
+    let mouseEncima = false;
 
     function mostrar(indice: number) {
       actual = indice;
       slides.forEach((slide, i) => slide.classList.toggle('is-active', i === indice));
+    }
 
-      // Se quita y se vuelve a poner la clase para reiniciar la barra de progreso, incluso en la misma foto
-      dots.forEach((dot) => {
-        dot.classList.remove('is-active');
-        dot.removeAttribute('aria-current');
-      });
-      void dots[indice].offsetWidth;
-      dots[indice].classList.add('is-active');
-      dots[indice].setAttribute('aria-current', 'true');
+    function programar() {
+      window.clearTimeout(temporizador);
+      if (fueraDePantalla || pestanaOculta || mouseEncima) return;
+      temporizador = window.setTimeout(() => {
+        mostrar((actual + 1) % slides.length);
+        programar();
+      }, DURACION);
     }
 
     // Se fuerza el estilo inicial para que la primera foto también haga su zoom
     void slides[0].offsetWidth;
     mostrar(0);
     slides[0].classList.remove('hero-slide--inicial');
-    indicadores.hidden = false;
-
-    dots.forEach((dot, i) => dot.addEventListener('click', () => mostrar(i)));
-
-    // El avance lo marca el final de la barra de progreso (5 s), así que pausar la animación pausa la rotación
-    indicadores.addEventListener('animationend', (evento) => {
-      if ((evento.target as HTMLElement).classList.contains('hero-dot-fill')) {
-        mostrar((actual + 1) % slides.length);
-      }
-    });
-
-    let fueraDePantalla = false;
-    let pestanaOculta = document.hidden;
-    const actualizarPausa = () => hero.classList.toggle('is-pausada', fueraDePantalla || pestanaOculta);
 
     new IntersectionObserver(([entrada]) => {
       fueraDePantalla = !entrada.isIntersecting;
-      actualizarPausa();
+      programar();
     }).observe(hero);
 
     document.addEventListener('visibilitychange', () => {
       pestanaOculta = document.hidden;
-      actualizarPausa();
+      programar();
     });
 
-    actualizarPausa();
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      hero.addEventListener('mouseenter', () => {
+        mouseEncima = true;
+        programar();
+      });
+      hero.addEventListener('mouseleave', () => {
+        mouseEncima = false;
+        programar();
+      });
+    }
+
+    programar();
   }
 </script>
 <style>
@@ -611,73 +591,10 @@ const iconosPaths = {
     }
   }
 
-  /* =====================================================
-     INDICADORES DEL CARRUSEL
-     Quedan sobre la zona del hero que todavía es opaca (antes del fundido inferior)
-     y debajo de los beneficios en mobile.
-  ====================================================== */
-  .hero-indicadores {
-    bottom: 40px;
-  }
-
-  @media (min-width: 768px) {
-    .hero-indicadores {
-      bottom: 70px;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .hero-indicadores {
-      bottom: 100px;
-    }
-  }
-
-  .hero-dot {
-    transition: width 300ms ease;
-  }
-
-  .hero-dot.is-active {
-    width: 40px;
-  }
-
-  .hero-dot:focus-visible {
-    outline-color: var(--color-white);
-  }
-
-  .hero-dot-fill {
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-
-  .hero-dot.is-active .hero-dot-fill {
-    animation: hero-progress 5s linear forwards;
-  }
-
-  @keyframes hero-progress {
-    from {
-      transform: scaleX(0);
-    }
-
-    to {
-      transform: scaleX(1);
-    }
-  }
-
-  .hero.is-pausada .hero-dot.is-active .hero-dot-fill {
-    animation-play-state: paused;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .hero:hover .hero-dot.is-active .hero-dot-fill {
-      animation-play-state: paused;
-    }
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .hero-background--entrada,
     .hero-picture,
-    .hero-slide,
-    .hero-dot {
+    .hero-slide {
       animation: none;
       transition: none;
     }
@@ -690,12 +607,6 @@ const iconosPaths = {
     .hero-slide--inicial,
     .hero-slide.is-active {
       transition: none;
-    }
-
-    /* Sin rotación ni progreso: la foto activa se marca con la barra completa */
-    .hero-dot.is-active .hero-dot-fill {
-      animation: none;
-      transform: scaleX(1);
     }
 
     .hero-cta,
