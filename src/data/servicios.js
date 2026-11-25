@@ -16,11 +16,11 @@ export const serviciosAcciones = {
 // (claves anteriores: estomago, colon, aire, lactosa, sibo)
 
 // La numeración 01 a 06 sigue el orden de los grupos y de los estudios dentro de cada uno.
-// `destacado` marca los estudios principales (cards más amplias con franja superior).
+// `destacado` marca los estudios principales (franja superior de color en la card).
 export const gruposServicios = [
   {
     id: 'endoscopicos',
-    nombre: 'Estudios endoscópicos',
+    nombre: 'Endoscopía',
     destacado: true,
     estudios: [
       {
@@ -39,6 +39,15 @@ export const gruposServicios = [
         preparacion: true,
         // icono: 'colon',
       },
+      {
+        // PENDIENTE REVISIÓN MÉDICA: validar descripción con el Dr. Galarza
+        id: 'cpre',
+        titulo: 'CPRE',
+        subtitulo: 'Colangiopancreatografía retrógrada endoscópica',
+        descripcion: 'Procedimiento endoscópico para diagnosticar y tratar problemas de la vía biliar y el páncreas, como cálculos o estrecheces.',
+        mensajeWhatsapp: 'Hola, quiero consultar por CPRE',
+        preparacion: false,
+      }
     ],
   },
   {
@@ -70,22 +79,6 @@ export const gruposServicios = [
         mensajeWhatsapp: 'Hola, quiero consultar por Detección de SIBO',
         preparacion: true,
         // icono: 'sibo',
-      },
-    ],
-  },
-  {
-    id: 'terapeutica',
-    nombre: 'Endoscopía terapéutica',
-    destacado: false,
-    estudios: [
-      {
-        // PENDIENTE REVISIÓN MÉDICA: validar descripción con el Dr. Galarza
-        id: 'cpre',
-        titulo: 'CPRE',
-        subtitulo: 'Colangiopancreatografía retrógrada endoscópica',
-        descripcion: 'Procedimiento endoscópico para diagnosticar y tratar problemas de la vía biliar y el páncreas, como cálculos o estrecheces.',
-        mensajeWhatsapp: 'Hola, quiero consultar por CPRE',
-        preparacion: false,
       },
     ],
   },
