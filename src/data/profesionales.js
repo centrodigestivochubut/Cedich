@@ -2,8 +2,7 @@ export const profesionalesBanda = {
   eyebrow: 'PROFESIONALES',
   titulo: 'Experiencia médica al servicio de tu salud',
   bajada: 'Un equipo que combina trayectoria, actualización constante y un trato humano en cada consulta.',
-  imagenAlt: 'El equipo de CEDICH frente al logo institucional del centro',
-};
+    imagenAlt: 'Instalaciones de CEDICH: la sala de recuperación y la sala de procedimientos',};
 
 export const profesionales = [
   {
